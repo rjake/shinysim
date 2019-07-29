@@ -83,6 +83,7 @@ input_ref
 if (nrow(input_ref) == 0) { # no inputs
   print("No inputs")
 } else if (sum(input_ref$missing) > 0) { # missing references
+  input_df <-
     input_ref %>%
     filter(missing == TRUE)
 
@@ -96,7 +97,7 @@ if (nrow(input_ref) == 0) { # no inputs
     update_input_code <- glue("input <- list({input_add})")
     message(
       glue(
-        "# Create code chunk:
+        "# Add this code chunk to your Rmd:
         \n```{{r input_demo, eval = FALSE}}\n\n",
         styler::style_text(update_input_code),
         "\n\n```"
