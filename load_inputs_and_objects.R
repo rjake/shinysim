@@ -10,8 +10,9 @@ selected_file <- file.choose()
 make_edits <-
   read_file(selected_file) %>%
   str_replace_all(" +", " ") %>%
-  str_replace_all("\\n(\\s?)(#.*)\\r", "") %>% # single line comments
-  str_replace_all("(\\%\\>\\%|,)( #.*)", "\\1 ") %>% # inline comments
+  str_replace_all("\\n(\\s?)(#.*)\r", "") %>% # single line comments
+  str_replace_all("(\\%\\>\\%)( #[^\r]*)\r", "\\1 ") %>% # inline comments after pipe
+  str_replace_all("([,\\{\\(])( #[^\r]*)\r", "\\1 ") %>% # inline comments after brackets
   str_replace_all("(\\<\\-)[ \r\n]+", "\\1 ") %>% # assignments
   str_replace_all("(,)[ \r\n]+", "\\1 ") %>% # commas
   str_replace_all("(\\%\\>\\%)[ \r\n]+", "\\1 ") %>% # dplyr pipe
@@ -72,15 +73,8 @@ input_ref <-
     times_used = n(),
     lines = glue_collapse(line, ",")
   ) %>%
-  ungroup() %>% 
-  mutate(
-    missing =
-      ifelse(
-        length(input_demo_values) == 0,
-        TRUE,
-        !input_name %in% input_demo_values
-      )
-  )
+  ungroup() %>%
+  mutate(missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0))
 
 
 input_ref
@@ -89,26 +83,33 @@ input_ref
 if (nrow(input_ref) == 0) { # no inputs
   print("No inputs")
 } else if (sum(input_ref$missing) > 0) { # missing references
-  df <-
-    input_ref %>% 
+    input_ref %>%
     filter(missing == TRUE)
-  
+
   input_add <-
-    glue('{df$input_name} = ""') %>%
+    glue('{input_df$input_name} = ""') %>%
     glue_collapse(sep = ", \n")
+
+  rm(input_df)
 
   if (length(input_demo) == 0) { # no input demo, create new list
     update_input_code <- glue("input <- list({input_add})")
-  } else { # append list
-    update_input_code <- 
-      str_replace(
-        trimws(input_demo),
-        "\\)$",
-        glue("\n, {input_add})")
+    message(
+      glue(
+        "# Create code chunk:
+        \n```{{r input_demo, eval = FALSE}}\n\n",
+        styler::style_text(update_input_code),
+        "\n\n```"
       )
+    )
+  } else { # append list
+    message("Update code:")
+    update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
+      #str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
+    styler::style_text(update_input_code)
   }
   # print input statement
-  styler::style_text(update_input_code)
+
 } else {
   print("All inputs accounted for :)")
 }
@@ -122,10 +123,14 @@ eval(parse(text = input_demo))
 reactive_functions <-
   final_code %>%
   filter(str_detect(text, "<- reactive")) %>%
+  #slice(21) %>%
   mutate(
     text =
-      str_replace(text, "reactive\\(", "function\\(\\)") %>%
-        str_replace("\\}\\)", "\\}")
+      trimws(text) %>%
+      str_replace("reactive\\((\\{)?", "function\\(\\)\\{") %>%
+      str_replace("\\}( )?\\)", "\\}") %>%
+      str_replace("\\)$", "\\}") %>%
+      str_replace_all('\"', "'")
   ) %>%
   pull(text)
 
@@ -146,11 +151,13 @@ rm(
   input_ref,
   final_edit,
   i,
+  input_add,
   input_demo,
   input_demo_values,
   make_edits,
   n_open,
   reactive_functions,
   selected_file,
+  update_input_code,
   x
 )
