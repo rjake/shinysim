@@ -24,6 +24,7 @@ make_edits <-
 n_open <- 0
 final_edit <- ""
 
+# add ; to lines
 for (i in 1:nchar(make_edits)) {
   x <- str_sub(make_edits, i, i)
   if (x == "{") {
@@ -41,7 +42,7 @@ for (i in 1:nchar(make_edits)) {
 # turn code into df
 final_code <-
   tibble(text = read_lines(str_replace_all(final_edit, ";+", ";")))
-
+  
 
 # INPUTS ----
 # make sure demo inputs exist (if required)
@@ -57,64 +58,67 @@ input_demo_values <-
   unlist()
 
 
-input_ref <-
-  read_lines(file = selected_file) %>%
-  tibble(text = trimws(.)) %>%
-  mutate(
-    line = row_number(),
-    text = str_remove(text, "#.*") # remove comments
-  ) %>%
-  filter(str_detect(text, "input\\$\\w+")) %>%
-  mutate(input_name = str_extract_all(text, "input\\$\\w+")) %>%
-  unnest(input_name) %>%
-  distinct(input_name, line) %>%
-  group_by(input_name = str_remove(input_name, "input\\$")) %>%
-  summarise(
-    times_used = n(),
-    lines = glue_collapse(line, ",")
-  ) %>%
-  ungroup() %>%
-  mutate(missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0))
+validate_inputs <- function() {
+  
+  input_ref <-
+    read_lines(file = selected_file) %>%
+    tibble(text = trimws(.)) %>%
+    mutate(
+      line = row_number(),
+      text = str_remove(text, "#.*") # remove comments
+    ) %>%
+    filter(str_detect(text, "input\\$\\w+")) %>%
+    mutate(input_name = str_extract_all(text, "input\\$\\w+")) %>%
+    unnest(input_name) %>%
+    distinct(input_name, line) %>%
+    group_by(input_name = str_remove(input_name, "input\\$")) %>%
+    summarise(
+      times_used = n(),
+      lines = glue_collapse(line, ",")
+    ) %>%
+    ungroup() %>%
+    mutate(missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0))
 
 
-input_ref
+  input_ref
 
 
-if (nrow(input_ref) == 0) { # no inputs
-  print("No inputs")
-} else if (sum(input_ref$missing) > 0) { # missing references
-  input_df <-
-    input_ref %>%
-    filter(missing == TRUE)
+  if (nrow(input_ref) == 0) { # no inputs
+    print("No inputs")
+  } else if (sum(input_ref$missing) > 0) { # missing references
+    input_df <-
+      input_ref %>%
+      filter(missing == TRUE)
 
-  input_add <-
-    glue('{input_df$input_name} = ""') %>%
-    glue_collapse(sep = ", \n")
+    input_add <-
+      glue('{input_df$input_name} = ""') %>%
+      glue_collapse(sep = ", \n")
 
-  rm(input_df)
+    rm(input_df)
 
-  if (length(input_demo) == 0) { # no input demo, create new list
-    update_input_code <- glue("input <- list({input_add})")
-    message(
-      glue(
-        "# Add this code chunk to your Rmd:
+    if (length(input_demo) == 0) { # no input demo, create new list
+      update_input_code <- glue("input <- list({input_add})")
+      message(
+        glue(
+          "# Add this code chunk to your Rmd:
         \n```{{r input_demo, eval = FALSE}}\n\n",
-        styler::style_text(update_input_code),
-        "\n\n```"
+          styler::style_text(update_input_code),
+          "\n\n```"
+        )
       )
-    )
-  } else { # append list
-    message("Update code:")
-    update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
-      #str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
-    styler::style_text(update_input_code)
+    } else { # append list
+      message("Update code:")
+      update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
+      # str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
+      styler::style_text(update_input_code)
+    }
+    # print input statement
+  } else {
+    print("All inputs accounted for :)")
   }
-  # print input statement
-
-} else {
-  print("All inputs accounted for :)")
 }
 
+validate_inputs()
 
 # * load inputs ----
 eval(parse(text = input_demo))
