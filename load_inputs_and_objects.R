@@ -16,6 +16,7 @@ validate_inputs()
 # * load inputs ----
 eval(parse(text = find_input_code()))
 
+run_all_chunks()
 
 # REACTIVE FUNCTIONS ----
 # * load functions ----
@@ -27,5 +28,6 @@ rm(
   final_code,
   find_input_code,
   find_reactive_functions,
+  run_all_chunks,
   validate_inputs
 )

@@ -111,6 +111,17 @@ validate_inputs <- function() {
   }
 }
 
+# Run all chunks
+run_all_chunks <- function(envir = globalenv()){
+  ## Function to run ALL chunks in a Rmd file
+  ## Based on
+  ## http://stackoverflow.com/questions/24753969/knitr-run-all-chunks-in-an-rmarkdown-document
+  temp_R <- tempfile(tmpdir = ".", fileext = ".R")
+  knitr::purl(file_to_parse, output = temp_R)
+  sys.source(temp_R, envir = envir)
+  unlink(temp_R)
+}
+
 
 # Find reactive functions ----
 find_reactive_functions <- function() {
