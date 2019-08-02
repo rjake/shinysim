@@ -1,16 +1,14 @@
-library(tidyverse)
-library(glue)
-library(knitr)
-
-#' Title
-#'
+#' Add objects and inputs from a Rmd to your global environment
+#' The function will encourage the creation of an input list that provides dummy values that will allow your code to run. Reactive objects are converted to functions so they can still be called as df() etc.
+#' 
 #' @param file 
 #'
-#' @return
+#' @return Will load all assignments from an Rmd into the global environment
 #' @export
 #' @importFrom readr read_lines
 #'
 #' @examples
+#' \dontrun{
 #' system.file(package = "shinyloadr", "inst/Rmd/test_dashboard.Rmd") %>% 
 #'  load_reactive_objects()
 #' 
@@ -19,6 +17,7 @@ library(knitr)
 #' 
 #' system.file(package = "shinyloadr", "inst/Rmd/test_dashboard_missing_inputs.Rmd") %>% 
 #'  load_reactive_objects()
+#' }
 #' 
 load_reactive_objects <- function(file){
   # source helper functions

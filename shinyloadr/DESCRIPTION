@@ -1,12 +1,20 @@
 Package: shinyloadr
-Title: What the Package Does (one line, title case)
+Title: Loads reactive data frames and mock input list into environment
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Jake", "Riley", email = "rjake@sas.upenn.edu", role = c("aut", "cre"))
+Description: Troubleshooting reactive data in flexdashboard can be difficult. The goal of this package is to convert reactive data frames into functions that will read from your raw data. It is recommended that an dummy input list be available to simulate the reactive inputs your users will manipulate.
 Depends: R (>= 3.6.0)
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
 Imports: 
-    magrittr
+  dplyr,
+  glue,
+  knitr,
+  magrittr,
+  readr,
+  stringr,
+  styler,
+  tibble,
+  tidyr

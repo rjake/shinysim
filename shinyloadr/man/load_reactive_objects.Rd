@@ -2,17 +2,23 @@
 % Please edit documentation in R/one_shot.R
 \name{load_reactive_objects}
 \alias{load_reactive_objects}
-\title{Title}
+\title{Add objects and inputs from a Rmd to your global environment
+The function will encourage the creation of an input list that provides dummy values that will allow your code to run. Reactive objects are converted to functions so they can still be called as df() etc.}
 \usage{
 load_reactive_objects(file)
 }
 \arguments{
 \item{file}{}
 }
+\value{
+Will load all assignments from an Rmd into the global environment
+}
 \description{
-Title
+Add objects and inputs from a Rmd to your global environment
+The function will encourage the creation of an input list that provides dummy values that will allow your code to run. Reactive objects are converted to functions so they can still be called as df() etc.
 }
 \examples{
+\dontrun{
 system.file(package = "shinyloadr", "inst/Rmd/test_dashboard.Rmd") \%>\% 
  load_reactive_objects()
 
@@ -21,5 +27,6 @@ system.file(package = "shinyloadr", "inst/Rmd/test_dashboard_no_inputs.Rmd") \%>
 
 system.file(package = "shinyloadr", "inst/Rmd/test_dashboard_missing_inputs.Rmd") \%>\% 
  load_reactive_objects()
+}
 
 }
