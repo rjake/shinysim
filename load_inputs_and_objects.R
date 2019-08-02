@@ -16,18 +16,22 @@ validate_inputs()
 # * load inputs ----
 eval(parse(text = find_input_code()))
 
-run_all_chunks()
+#run_all_chunks()
 
 # REACTIVE FUNCTIONS ----
 # * load functions ----
-eval(parse(text = find_reactive_functions()))
+eval(parse(text = final_code$code)) #[20]
 
 rm(
   code_to_df,
-  file_to_parse,
+  convert_assignments,
+  #file_to_parse,
   final_code,
+  find_all_assignments,
+  find_all_chunks,
   find_input_code,
-  find_reactive_functions,
-  run_all_chunks,
+  temp_folder,
+  temp_R,
   validate_inputs
 )
+unlink(temp_folder, recursive = TRUE)

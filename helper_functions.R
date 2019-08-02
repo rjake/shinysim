@@ -1,49 +1,29 @@
+temp_folder <- tempdir()
+temp_R <- tempfile(tmpdir = temp_folder, fileext = ".R")
+
 # Get code ready for evaluation ----
 code_to_df <- function() {
-  clean_code <-
-    read_file(file_to_parse) %>%
-    str_replace_all(" +", " ") %>%
-    str_replace_all("\\n(\\s?)(#.*)\r", "") %>% # single line comments
-    str_replace_all("(\\%\\>\\%)( #[^\r]*)\r", "\\1 ") %>% # inline comments after pipe
-    str_replace_all("([,\\{\\(])( #[^\r]*)\r", "\\1 ") %>% # inline comments after brackets
-    str_replace_all("(\\<\\-)[ \r\n]+", "\\1 ") %>% # assignments
-    str_replace_all("(,)[ \r\n]+", "\\1 ") %>% # commas
-    str_replace_all("(\\%\\>\\%)[ \r\n]+", "\\1 ") %>% # dplyr pipe
-    str_replace_all("(\\+)[ \r\n]+", "\\1 ") %>% # ggplot pipe
-    str_replace_all("([\\{\\(]+)[ \r\n]+", "\\1 ") %>% # open bracket/parens
-    str_replace_all("[ \r\n]+([\\}\\)]+)", "\\1 ") # move close bracket/parens up
-  
-  # find closing parenteses for all open parenteses
-  n_open <- 0
-  final_edit <- ""
-  
-  # add ; to lines
-  for (i in 1:nchar(clean_code)) {
-    x <- str_sub(clean_code, i, i)
-    if (x == "{") {
-      n_open <- n_open + 1
-    }
-    if (x == "}") {
-      n_open <- n_open - 1
-    }
-    if (n_open > 0 && str_detect(x, "[\r\n]")) {
-      x <- ";"
-    }
-    final_edit <- paste0(final_edit, x)
-  }
-  
-  # turn code into df
-  tibble(text = read_lines(str_replace_all(final_edit, ";+", ";")))
-  
+  tibble(raw = as.character(find_all_assignments())) %>% 
+    rowwise() %>% 
+    mutate(code = convert_assignments(raw)) %>% 
+    ungroup()
 }
 
 
 # Find input demo ----
-find_input_code <- function() {
-  # final_code <- code_to_df()
-  final_code %>%
-  filter(str_detect(text, "input <-")) %>%
-  pull(text)
+find_input_code <- function(){
+  replace_evals <- 
+    read_file(file_to_parse) %>% 
+    str_replace_all("eval = F(ALSE)?", "eval = TRUE")
+  
+  # create R doc from 
+  knitr::purl(text = replace_evals, output = temp_R, quiet = TRUE)
+  
+  parsed <- parse(temp_R)
+  
+  input_code <- suppressWarnings(parsed[str_detect(parsed, "input <-")])
+  
+  as.character(input_code)
 }
 
 
@@ -111,32 +91,37 @@ validate_inputs <- function() {
   }
 }
 
+
 # Run all chunks
-run_all_chunks <- function(envir = globalenv()){
+find_all_chunks <- function(envir = globalenv()){
   ## Function to run ALL chunks in a Rmd file
   ## Based on
   ## http://stackoverflow.com/questions/24753969/knitr-run-all-chunks-in-an-rmarkdown-document
-  temp_R <- tempfile(tmpdir = ".", fileext = ".R")
-  knitr::purl(file_to_parse, output = temp_R)
-  sys.source(temp_R, envir = envir)
-  unlink(temp_R)
+  knitr::purl(file_to_parse, output = temp_R, quiet = TRUE)
+  # sys.source(temp_R, envir = envir)
+  # unlink(temp_R)
 }
 
 
 # Find reactive functions ----
-find_reactive_functions <- function() {
-  final_code %>%
-  filter(str_detect(text, "<- reactive")) %>%
-  #slice(21) %>%
-  mutate(
-    text =
-      trimws(text) %>%
-      str_replace("reactive\\((\\{)?", "function\\(\\)\\{") %>%
-      str_replace("\\}( )?\\)", "\\}") %>%
-      str_replace("\\)$", "\\}") %>%
+find_all_assignments <- function() {
+  x <- knitr::purl(file_to_parse, output = temp_R, quiet = TRUE)
+  r_code <- as.character(parse(x)) %>% trimws()
+  assignments <- r_code[str_detect(r_code, "^(\\w+ <-|library)")]
+  
+  return(assignments)
+}
+
+convert_assignments <- function(x){
+  if (str_detect(x, "\\w+ <- .*reactive\\(")) {
+    x <- x %>%
+      str_replace_all("reactive\\((\\{)?", "function\\(\\)\\{") %>%
+      str_replace_all("\\}( )?\\)", "\\}") %>%
+      str_replace_all("\\)$", "\\}") %>%
       str_replace_all('\"', "'")
-  ) %>%
-  pull(text)
+  }
+  
+  return(x)
 }
 
 # x <-
