@@ -13,6 +13,7 @@ Imports:
   glue,
   knitr,
   magrittr,
+  pander,
   readr,
   stringr,
   styler,

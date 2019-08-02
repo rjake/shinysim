@@ -95,8 +95,9 @@ find_input_code <- function(file, output){
 #' @importFrom stringr str_extract_all str_remove
 #' @importFrom readr read_lines
 #' @importFrom tibble tibble
-#' @importFrom dplyr mutate row_number filter distinct group_by summarise n
+#' @importFrom dplyr mutate row_number filter distinct group_by summarise n select arrange
 #' @importFrom tidyr unnest
+#' @importFrom pander pandoc.table
 #' @importFrom glue glue glue_collapse
 #' @importFrom styler style_text
 #' 
@@ -108,7 +109,7 @@ validate_inputs <- function(file, output) {
     input_code %>%
     str_extract_all("(\\w+)(?=\\s\\=)") %>%
     unlist()
-
+  
   input_ref <-
     read_lines(file = file) %>%
     tibble(text = trimws(.)) %>%
@@ -123,11 +124,14 @@ validate_inputs <- function(file, output) {
     group_by(input_name = str_remove(input_name, "input\\$")) %>%
     summarise(
       times_used = n(),
-      lines = glue_collapse(line, sep = ",")
+      lines = glue_collapse(line, sep = ", ")
     ) %>%
     ungroup() %>%
-    mutate(missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0))
-
+    mutate(
+      missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0),
+      status = ifelse(missing, "missing", "have")
+    )
+  
   
   if (nrow(input_ref) == 0) { # no inputs
     print("No inputs")
@@ -137,19 +141,22 @@ validate_inputs <- function(file, output) {
     
   } else { # missing references
     message("Here are the inputs you have listed:\n")
-    print(as.data.frame(input_ref))
-
+    input_ref %>% 
+      select(status, input = input_name, lines) %>% 
+      arrange(status) %>%       
+      pander::pandoc.table(justify = "left", split.cells = 50)
+    
     input_df <-
       input_ref %>%
       filter(missing == TRUE)
-
+    
     input_add <-
       glue('{input_df$input_name} = ""') %>%
       glue_collapse(sep = ", \n")
-
+    
     if (length(input_code) == 0) { # no input demo, create new list
       update_input_code <- glue("input <- list({input_add})")
-
+      
       message("\n# Add this code chunk to your Rmd:\n")
       message("```{r input_demo, eval = FALSE}")
       print(styler::style_text(update_input_code))
