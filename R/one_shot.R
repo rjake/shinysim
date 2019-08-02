@@ -46,8 +46,9 @@ load_reactive_objects <- function(file){
   
   # REACTIVE FUNCTIONS ----
   # * load functions ----
-  eval(parse(text = final_code$code), envir = .GlobalEnv) #[20]
-  
+  suppressMessages(
+    eval(parse(text = final_code$code), envir = .GlobalEnv)
+  )
   # rm(
   #   code_to_df,
   #   convert_assignments,
