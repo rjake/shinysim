@@ -1,29 +1,25 @@
-# Find all assignments and libraries ----
-
-#' Title
+#' Find all libraries and assignments
 #'
-#' @param file 
-#' @param output 
+#' @param file
+#' @param output
 #'
-#' @return A data frame of all assignments and libraries
-#' @export
+#' @description A data frame of all assignments and libraries
 #' @importFrom knitr purl
 #'
 find_all_assignments <- function(file, output) {
   x <- purl(file, output = output, quiet = TRUE)
   r_code <- as.character(parse(x)) %>% trimws()
   assignments <- r_code[grepl("^(\\w+ <-|library)", r_code)]
-  
+
   return(assignments)
 }
 
 
-#' Title
+#' Convert reactive dataframes to functions
 #'
-#' @param x 
-#'
-#' @return
-#' @export
+#' @param x
+#' @description Code will break if additional arguments are present
+#' @noRd
 #' @importFrom stringr str_detect str_replace_all
 #'
 convert_assignments <- function(x){
@@ -34,64 +30,58 @@ convert_assignments <- function(x){
       str_replace_all("\\)$", "\\}") %>%
       str_replace_all('\"', "'")
   }
-  
+
   return(x)
 }
 
-# Get code ready for evaluation ----
 
-#' Title
+#' Convert R code to a data frame
 #'
-#' @param file 
-#' @param output 
+#' @param file
+#' @param output
 #'
-#' @return
-#' @export
 #' @importFrom tibble tibble
 #' @importFrom dplyr rowwise mutate ungroup
 #'
 code_to_df <- function(file, output) {
-  tibble(raw = as.character(find_all_assignments(file, output))) %>% 
-    rowwise() %>% 
-    mutate(code = convert_assignments(raw)) %>% 
+  tibble(raw = as.character(find_all_assignments(file, output))) %>%
+    rowwise() %>%
+    mutate(code = convert_assignments(raw)) %>%
     ungroup()
 }
 
 
-#' Title
+#' Look for input <- demo
 #'
-#' @param file 
-#' @param output 
+#' @param file
+#' @param output
 #'
-#' @return
-#' @export
 #' @importFrom readr read_file
 #' @importFrom stringr str_replace_all
 #' @importFrom knitr purl
 #'
 find_input_code <- function(file, output){
-  replace_evals <- 
-    read_file(file) %>% 
+  replace_evals <-
+    read_file(file) %>%
     str_replace_all("eval = F(ALSE)?", "eval = TRUE")
-  
+
   # create R doc from Rmd
   knitr::purl(text = replace_evals, output = output, quiet = TRUE)
-  
+
   parsed <- parse(output)
-  
+
   input_code <- parsed[grepl("input <-", parsed)]
-  
+
   as.character(input_code)
 }
 
 
-#' Title
+#' Validate demo input statement
 #'
-#' @param file 
-#' @param output 
+#' @param file
+#' @param output
 #'
-#' @return Prints a statement about the inputs that are either listed or missing
-#' @export
+#' @description Prints a statement about the inputs that are either listed or missing
 #' @importFrom stringr str_extract_all str_remove
 #' @importFrom readr read_lines
 #' @importFrom tibble tibble
@@ -100,16 +90,16 @@ find_input_code <- function(file, output){
 #' @importFrom pander pandoc.table
 #' @importFrom glue glue glue_collapse
 #' @importFrom styler style_text
-#' 
+#'
 #'
 validate_inputs <- function(file, output) {
   input_code <- find_input_code(file, output)
-  
+
   input_demo_values <-
     input_code %>%
     str_extract_all("(\\w+)(?=\\s\\=)") %>%
     unlist()
-  
+
   input_ref <-
     read_lines(file = file) %>%
     tibble(text = trimws(.)) %>%
@@ -131,47 +121,47 @@ validate_inputs <- function(file, output) {
       missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0),
       status = ifelse(missing, "missing", "have")
     )
-  
-  
+
+
   if (nrow(input_ref) == 0) { # no inputs
     print("No inputs")
-    
+
   } else if (sum(input_ref$missing) == 0) { # no missing references
     message("\n\nAll inputs accounted for :)")
-    
+
   } else { # missing references
     message("Here are the inputs you have listed:\n")
-    input_ref %>% 
-      select(status, input = input_name, lines) %>% 
-      arrange(status) %>%       
+    input_ref %>%
+      select(status, input = input_name, lines) %>%
+      arrange(status) %>%
       pander::pandoc.table(justify = "left", split.cells = 50)
-    
+
     input_df <-
       input_ref %>%
       filter(missing == TRUE)
-    
+
     input_add <-
       glue('{input_df$input_name} = ""') %>%
       glue_collapse(sep = ", \n")
-    
+
     if (length(input_code) == 0) { # no input demo, create new list
       update_input_code <- glue("input <- list({input_add})")
-      
+
       message("\n# Add this code chunk to your Rmd:\n")
       message("```{r input_demo, eval = FALSE}")
       print(styler::style_text(update_input_code))
       message("```")
-      
+
     } else { # append list
       message("Update code:")
       update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
       # str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
       print(styler::style_text(update_input_code))
-      
+
     }
-    
+
     readline(
-      prompt = 
+      prompt =
         "Without all of the input list items accounted for, some of your functions may not work.\nDo you want to continue? Press [Enter] to continue or [Esc] to cancel."
     )
   }
