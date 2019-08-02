@@ -1,15 +1,31 @@
-#temp_folder <- tempdir()
-#temp_R <- tempfile(tmpdir = temp_folder, fileext = ".R")
-
 # Find all assignments and libraries ----
+
+#' Title
+#'
+#' @param file 
+#' @param output 
+#'
+#' @return A data frame of all assignments and libraries
+#' @export
+#' @importFrom knitr purl
+#'
 find_all_assignments <- function(file, output) {
-  x <- knitr::purl(file, output = output, quiet = TRUE)
+  x <- purl(file, output = output, quiet = TRUE)
   r_code <- as.character(parse(x)) %>% trimws()
-  assignments <- r_code[str_detect(r_code, "^(\\w+ <-|library)")]
+  assignments <- r_code[grepl("^(\\w+ <-|library)", r_code)]
   
   return(assignments)
 }
 
+
+#' Title
+#'
+#' @param x 
+#'
+#' @return
+#' @export
+#' @importFrom stringr str_detect str_replace_all
+#'
 convert_assignments <- function(x){
   if (str_detect(x, "\\w+ <- .*reactive\\(")) {
     x <- x %>%
@@ -23,6 +39,17 @@ convert_assignments <- function(x){
 }
 
 # Get code ready for evaluation ----
+
+#' Title
+#'
+#' @param file 
+#' @param output 
+#'
+#' @return
+#' @export
+#' @importFrom tibble tibble
+#' @importFrom dplyr rowwise mutate ungroup
+#'
 code_to_df <- function(file, output) {
   tibble(raw = as.character(find_all_assignments(file, output))) %>% 
     rowwise() %>% 
@@ -31,7 +58,17 @@ code_to_df <- function(file, output) {
 }
 
 
-# Find input demo ----
+#' Title
+#'
+#' @param file 
+#' @param output 
+#'
+#' @return
+#' @export
+#' @importFrom readr read_file
+#' @importFrom stringr str_replace_all
+#' @importFrom knitr purl
+#'
 find_input_code <- function(file, output){
   replace_evals <- 
     read_file(file) %>% 
@@ -48,10 +85,27 @@ find_input_code <- function(file, output){
 }
 
 
-# Write message based on inputs available ----
+#' Title
+#'
+#' @param file 
+#' @param output 
+#'
+#' @return Prints a statement about the inputs that are either listed or missing
+#' @export
+#' @importFrom stringr str_extract_all str_remove
+#' @importFrom readr read_lines
+#' @importFrom tibble tibble
+#' @importFrom dplyr mutate row_number filter distinct group_by summarise n
+#' @importFrom tidyr unnest
+#' @importFrom glue glue glue_collapse
+#' @importFrom styler style_text
+#' 
+#'
 validate_inputs <- function(file, output) {
+  input_code <- find_input_code(file, output)
+  
   input_demo_values <-
-    find_input_code(file, output) %>%
+    input_code %>%
     str_extract_all("(\\w+)(?=\\s\\=)") %>%
     unlist()
 
@@ -69,11 +123,12 @@ validate_inputs <- function(file, output) {
     group_by(input_name = str_remove(input_name, "input\\$")) %>%
     summarise(
       times_used = n(),
-      lines = glue_collapse(line, ",")
+      lines = glue_collapse(line, sep = ",")
     ) %>%
     ungroup() %>%
     mutate(missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0))
 
+  
   if (nrow(input_ref) == 0) { # no inputs
     print("No inputs")
     
@@ -92,7 +147,7 @@ validate_inputs <- function(file, output) {
       glue('{input_df$input_name} = ""') %>%
       glue_collapse(sep = ", \n")
 
-    if (length(find_input_code()) == 0) { # no input demo, create new list
+    if (length(input_code) == 0) { # no input demo, create new list
       update_input_code <- glue("input <- list({input_add})")
 
       message("\n# Add this code chunk to your Rmd:\n")
@@ -104,10 +159,13 @@ validate_inputs <- function(file, output) {
       message("Update code:")
       update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
       # str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
-      styler::style_text(update_input_code)
+      print(styler::style_text(update_input_code))
       
     }
     
-    readline(prompt = "Do you want to continue? Press enter to continue or Esc to cancel")
+    readline(
+      prompt = 
+        "Without all of the input list items accounted for, some of your functions may not work.\nDo you want to continue? Press [Enter] to continue or [Esc] to cancel."
+    )
   }
 }
