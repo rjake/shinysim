@@ -2,15 +2,13 @@
 % Please edit documentation in R/helper_functions.R
 \name{code_to_df}
 \alias{code_to_df}
-\title{Title}
+\title{Convert R code to a data frame}
 \usage{
 code_to_df(file, output)
 }
 \arguments{
-\item{file}{}
-
 \item{output}{}
 }
 \description{
-Title
+Convert R code to a data frame
 }

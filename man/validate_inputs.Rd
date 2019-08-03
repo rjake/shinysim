@@ -2,18 +2,13 @@
 % Please edit documentation in R/helper_functions.R
 \name{validate_inputs}
 \alias{validate_inputs}
-\title{Title}
+\title{Validate demo input statement}
 \usage{
 validate_inputs(file, output)
 }
 \arguments{
-\item{file}{}
-
 \item{output}{}
 }
-\value{
-Prints a statement about the inputs that are either listed or missing
-}
 \description{
-Title
+Prints a statement about the inputs that are either listed or missing
 }

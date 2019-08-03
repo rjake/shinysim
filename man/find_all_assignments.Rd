@@ -2,18 +2,13 @@
 % Please edit documentation in R/helper_functions.R
 \name{find_all_assignments}
 \alias{find_all_assignments}
-\title{Title}
+\title{Find all libraries and assignments}
 \usage{
 find_all_assignments(file, output)
 }
 \arguments{
-\item{file}{}
-
 \item{output}{}
 }
-\value{
-A data frame of all assignments and libraries
-}
 \description{
-Title
+A data frame of all assignments and libraries
 }
