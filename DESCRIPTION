@@ -19,3 +19,6 @@ Imports:
   styler,
   tibble,
   tidyr
+VignetteBuilder: knitr
+Suggests: 
+    rmarkdown
