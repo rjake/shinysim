@@ -20,7 +20,8 @@ input <-list(
 It can be challenging to troubleshoot or design the output of reactive data elements in a flexdashboard. Very often, to see a change, the builder has to run the dashboard in order to see the output. This package is designed to alleviate this challenge by turing your reactive objects into functions you can interact with in the console. Here are a few tips that will help you (and others) troubleshoot your code:
 
 ## Create a chunk to hold dummy input values
-If you create a chunk like the code below, you will be able to simulate reactive values like `input$date_selected` and `input$show` without having to run the whole dashboard. The `input` object created here is a list containing 2 elements (`data_selected` and `show`). By creating the list named `input` in a chunk of your code, you can simulate the way the values will work when it actually runs. Do note, you will need to use `eval = FALSE` in the chunk so this part of your code will be ignored when the dashboard is run.
+If you create a chunk like the code below, you will be able to simulate reactive values like `input$displ` and `input$year` without having to run the whole dashboard. The `input` object created here is a list containing 3 elements (`displ`,  `year`, and `drv`). By creating the list named `input` in a chunk of your code, you can simulate the way the values will work when it actually runs. Do note, you will need to use `eval = FALSE` in the chunk so this part of your code will be ignored when the dashboard is run.
+
 ````r
 `r ''````{r input_demo, eval = FALSE}
 input <-list(
@@ -69,7 +70,7 @@ renderPlot(
 )
 ```
 
-If this reactive data frame is created *only* for this one plot, you can embed the data manipulatin within the `renderPlot()` function.
+If this reactive data frame is created *only* for this one plot, you can embed the data manipulatin within the `renderPlot()` function. If this data will be used thin two or more outputs in the dashboard and has a lot of data manipulation, a reactive dataframe is a good idea.
 
 ```{r}
 renderPlot({
@@ -85,6 +86,6 @@ renderPlot({
 When you add curly braces `{...}` inside the `renderPlot()` it creates a mini environment where you can create multiple objects. This is similar to how you might do the same in a `function() {...}` or a loop `for(i in 1:10) {...}`
 
 
-###In summary
+## In summary
 * Try to design your code so you can troubleshoot it without having to run it
-* Use the curly braces inside your render*({...}) functions if you need 1 or more objects to create an output
+* Use the curly braces inside your `render*({...})` functions if you need to do data manipulation in order to create an output
