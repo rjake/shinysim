@@ -2,15 +2,13 @@
 % Please edit documentation in R/helper_functions.R
 \name{find_input_code}
 \alias{find_input_code}
-\title{Title}
+\title{Look for input <- demo}
 \usage{
 find_input_code(file, output)
 }
 \arguments{
-\item{file}{}
-
 \item{output}{}
 }
 \description{
-Title
+Look for input <- demo
 }

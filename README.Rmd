@@ -1,0 +1,71 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# shinyloadr
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+Troubleshooting reactive data in a flexdashboard can be difficult. The goal of this package is to convert reactive data frames into functions that will read from your raw data and become available in your global environment. The main function will also recommended that you put a dummy `input` list in your Rmd to simulate the reactive inputs. You can learn more about a dummy input list in [this vignette](../docs/articles/tips-and-tricks.html).
+
+
+## Installation
+<!--  
+  You can install the released version of `shinyloadr` from [CRAN](https://CRAN.R-project.org) with:
+  
+  ``` r
+  install.packages("shinyloadr")
+  ```
+
+-->
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("rjake/shinyloadr")
+```
+## Example
+
+There is a dummy flexdashboard available when the package is installed for you to see how this works. 
+
+```{r example, eval = FALSE}
+library(shinyloadr)
+
+system.file(package = "shinyloadr", "Rmd/test_dashboard_no_inputs.Rmd") %>% 
+ load_reactive_objects()
+```
+
+This will result in the following output
+```{r echo=FALSE, eval=TRUE, comment=""}
+print(glue::glue('Here are the inputs you have listed:
+
+  input_name  times_used  lines  missing
+1      displ           1     45     TRUE
+2       year           2  48,49     TRUE
+
+Add this code chunk to your Rmd:
+```{{r input_demo, eval = FALSE}}
+input <- list(
+  displ = "",
+  year = ""
+)
+', '```
+
+Without all of the input list items accounted for, some of your functions may not work.
+Do you want to continue? Press [Enter] to continue or [Esc] to cancel.
+'))
+```
+
+Hitting `[Enter]` will then load these objects into your global environment.
