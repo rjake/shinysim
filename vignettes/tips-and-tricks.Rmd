@@ -84,19 +84,7 @@ renderPlot({
 
 When you add curly braces `{...}` inside the `renderPlot()` it creates a mini environment where you can create multiple objects. This is similar to how you might do the same in a `function() {...}` or a loop `for(i in 1:10) {...}`
 
-## Try not to double assign
-
-This is not specific to flexdashboards, it is just good practice. It was common in base R to see something like the code below. 
-```{r}
-my_data <- read.csv(..., nrows = 100)
-
-my_data <- my_data %>% sample_frac(size = 0.5)
-```
-
-In many cases, the user creates an object (`my_data`) then does some `dplyr` stuff to it by reassigning `my_data` to `my_data`. This can quickly cause a headache if you accidentally run line the second line more than once. In this example, I would start with the 100 rows originally from the csv data and then in the second line, I would get half of the rows (50). If I accidentally run that line again, forgetting to run the first line, I will now have 25 rows instead of 50. It would be best to either pipe the `sample_frac()` on to the original `read.csv()` line or to give the new version a different name.
-
 
 ###In summary
 * Try to design your code so you can troubleshoot it without having to run it
 * Use the curly braces inside your render*({...}) functions if you need 1 or more objects to create an output
-* Avoid reassigning objects as themselves
