@@ -166,3 +166,64 @@ validate_inputs <- function(file, output) {
     )
   }
 }
+
+#' Clear all objects in environment
+#'
+#' @param keep A regular expression of objects in environment to keep
+#' @param remove A regular expression of objects in environment to remove 
+#' @return 
+#' @export
+#'
+#' @examples
+clear_environment <- function(keep = NULL, remove = NULL) {
+  
+  all_objects <- ls(envir = .GlobalEnv)
+  base_regex <- "temp_|final_code"
+  
+  if (!missing(remove)) {
+    base_regex <- 
+      gsub(paste0("\\|?", remove, "\\|?"), "|", base_regex) %>% 
+      gsub("(\\|\\|)+", "", .) %>% # multiple pipes: ||
+      gsub("\\^(\\||$)", "", .) %>% # "^|" or ends with ^
+      gsub("\\|\\$", "", .) # "|$"
+  } 
+  
+  final_regex <- 
+    ifelse(missing(keep), base_regex, paste(c(base_regex, keep), collapse = "|")) %>% 
+    gsub("(\\|\\|)+", "", .)
+  
+  identify_objects <- !grepl(final_regex, all_objects)
+  remove_objects <- all_objects[identify_objects]
+  
+  # list items to be kept
+  if (length(remove_objects) != length(all_objects)) {
+    message(
+      paste(
+        "these items will be kept:\n -", 
+        paste(all_objects[!identify_objects], collapse = "\n - ")
+      )
+    )
+  }
+  
+  # list items to be removed and then remove them
+  if (length(remove_objects) > 0) {
+    message(
+      paste(
+        "these items will be removed:\n -", 
+        paste(remove_objects, collapse = "\n - ")
+      )
+    )  
+    # confirm selections
+    confirm <-
+      readline(
+        prompt =
+          "Do you want to continue? Press [Enter] to continue or [Esc] to cancel."
+      ) == ""
+    
+    # clear environment if enter is used
+    if (confirm){
+      rm(list = remove_objects, envir = .GlobalEnv)
+    }
+  }
+  
+}
