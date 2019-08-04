@@ -127,7 +127,7 @@ validate_inputs <- function(file, output) {
     print("No inputs")
 
   } else if (sum(input_ref$missing) == 0) { # no missing references
-    message("\n\nAll inputs accounted for :)")
+    message("\nall inputs accounted for :)\n")
 
   } else { # missing references
     message("Here are the inputs you have listed:\n")
@@ -170,23 +170,16 @@ validate_inputs <- function(file, output) {
 #' Clear all objects in environment
 #'
 #' @param keep A regular expression of objects in environment to keep
-#' @param remove A regular expression of objects in environment to remove 
+#' 
+#' @importFrom glue glue
 #' @return 
 #' @export
 #'
 #' @examples
-clear_environment <- function(keep = NULL, remove = NULL) {
+clear_environment <- function(keep = NULL) {
   
   all_objects <- ls(envir = .GlobalEnv)
   base_regex <- "temp_|final_code"
-  
-  if (!missing(remove)) {
-    base_regex <- 
-      gsub(paste0("\\|?", remove, "\\|?"), "|", base_regex) %>% 
-      gsub("(\\|\\|)+", "", .) %>% # multiple pipes: ||
-      gsub("\\^(\\||$)", "", .) %>% # "^|" or ends with ^
-      gsub("\\|\\$", "", .) # "|$"
-  } 
   
   final_regex <- 
     ifelse(missing(keep), base_regex, paste(c(base_regex, keep), collapse = "|")) %>% 
@@ -195,29 +188,37 @@ clear_environment <- function(keep = NULL, remove = NULL) {
   identify_objects <- !grepl(final_regex, all_objects)
   remove_objects <- all_objects[identify_objects]
   
-  # list items to be kept
-  if (length(remove_objects) != length(all_objects)) {
-    message(
-      paste(
-        "these items will be kept:\n -", 
-        paste(all_objects[!identify_objects], collapse = "\n - ")
-      )
-    )
-  }
-  
   # list items to be removed and then remove them
   if (length(remove_objects) > 0) {
     message(
       paste(
-        "these items will be removed:\n -", 
+        "these items will be removed or replaced when data is loaded:\n -", 
         paste(remove_objects, collapse = "\n - ")
       )
     )  
+    
+    # list items to be kept
+    if (length(remove_objects) != length(all_objects)) {
+      message(
+        paste(
+          "\nthese items will be kept:\n -", 
+          paste(all_objects[!identify_objects], collapse = "\n - ")
+        )
+      )
+      
+      regex_phrase <- glue('edit this regex pattern: "{keep}"')
+    } else {
+      regex_phrase <- 'use the (keep = "") argument'
+    }
+    
     # confirm selections
     confirm <-
       readline(
-        prompt =
-          "Do you want to continue? Press [Enter] to continue or [Esc] to cancel."
+        prompt = 
+          glue(
+            'To edit this list, press [Esc] and {regex_phrase}
+            Otherwise, press [Enter] to continue.'
+          )
       ) == ""
     
     # clear environment if enter is used

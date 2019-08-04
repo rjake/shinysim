@@ -7,12 +7,7 @@
 #' @param file Rmd to be evaluated and loaded into global environment
 #' @param clear_environment When \code{TRUE}, will remove objects not named in \code{...}
 #' @param restart When \code{TRUE}, will restart the current R session. If you have R default to restore RData by default, you will need to use the \code{clear_environment} argument as well 
-#' @param ... other arguments passed on to  \code{\link{clear_environment}} as regular expressions: 
-#' \itemize{
-#'   \item \code{keep} 
-#'   \item \code{remove}
-#
-#' }
+#' @param keep a regular expression of objects to keep when \code{clear_environment = TRUE}
 #'
 #' @export
 #' @importFrom readr read_lines
@@ -32,7 +27,8 @@
 #' 
 load_reactive_objects <- function(file, 
                                   clear_environment = FALSE, 
-                                  restart = FALSE, ...){
+                                  restart = FALSE, 
+                                  keep = NULL){
   
   #create temp folder
   temp_folder <- tempdir(check = TRUE)
@@ -53,7 +49,7 @@ load_reactive_objects <- function(file,
   }
   
   if (clear_environment) {
-    clear_environment(...)
+    clear_environment(keep)
   }
   
   # * load inputs ----
