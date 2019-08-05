@@ -49,14 +49,24 @@ load_reactive_objects <- function(file,
   }
   
   if (clear_environment) {
-    clear_environment(keep)
+    # remove_object will return "cleared" if successful
+    result <- remove_objects(keep)
+    if(result != "cleared") {
+      stop(result, call. = FALSE)
+    }
+    
+  } else {
+    result <- "proceed"
+    
   }
   
-  # * load inputs ----
-  eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
-  
-  # load libraries and functions ----
-  suppressMessages(
-    eval(parse(text = final_code$code), envir = .GlobalEnv)
-  )
+  if (result %in% c("cleared", "proceed")){
+    # * load inputs ----
+    eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
+    
+    # load libraries and functions ----
+    suppressMessages(
+      eval(parse(text = final_code$code), envir = .GlobalEnv)
+    )
+  }
 }
