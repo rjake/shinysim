@@ -15,6 +15,7 @@ Imports:
   magrittr,
   pander,
   readr,
+  rstudioapi,
   stringr,
   styler,
   tibble,
