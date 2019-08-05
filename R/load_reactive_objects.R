@@ -1,11 +1,17 @@
 #' Add objects and inputs from a Rmd to your global environment
-#' @description The function will encourage the creation of an input list that provides dummy values that will allow your code to run. Reactive objects are converted to functions so they can still be called as df() etc.
 #' 
-#' @param file 
+#' @description This function will run all assignments of your Rmd. In the process, this function will encourage the creation of a dummy \code{input} list that will mimic user input and allow your code to run. Lastly, reactive objects are converted to functions so they can still be called as \code{df()} etc.
+#' @section Warning:
+#' This function has the ability to overwrite your objects in your global environment. Make sure you understand how this function works before moving forward.
+#' 
+#' @param file Rmd to be evaluated and loaded into global environment
+#' @param clear_environment When \code{TRUE}, will remove objects not named in \code{...}
+#' @param restart When \code{TRUE}, will restart the current R session. If you have R default to restore RData by default, you will need to use the \code{clear_environment} argument as well 
+#' @param keep a regular expression of objects to keep when \code{clear_environment = TRUE}
 #'
-#' @return Will load all assignments from an Rmd into the global environment
 #' @export
 #' @importFrom readr read_lines
+#' @importFrom rstudioapi restartSession
 #'
 #' @examples
 #' \dontrun{
@@ -19,14 +25,18 @@
 #'  load_reactive_objects()
 #' }
 #' 
-load_reactive_objects <- function(file){
+load_reactive_objects <- function(file, 
+                                  clear_environment = FALSE, 
+                                  restart = FALSE, 
+                                  keep = NULL){
+  
   #create temp folder
   temp_folder <- tempdir(check = TRUE)
   temp_R <- tempfile(tmpdir = temp_folder, fileext = ".R")
   
   # select file if not provided
   file_to_parse <- ifelse(missing(file), file.choose(), file) 
-
+  
   # code as tibble
   final_code <- 
     code_to_df(file_to_parse, temp_R)
@@ -34,12 +44,29 @@ load_reactive_objects <- function(file){
   # make sure demo inputs exist (if required)
   validate_inputs(file_to_parse, temp_R)
   
-  # * load inputs ----
-  eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
+  if (restart) {
+    rstudioapi::restartSession()
+  }
   
+  if (clear_environment) {
+    # remove_object will return "cleared" if successful
+    result <- remove_objects(keep)
+    if(result != "cleared") {
+      stop(result, call. = FALSE)
+    }
+    
+  } else {
+    result <- "proceed"
+    
+  }
   
-  # load libraries and functions ----
-  suppressMessages(
-    eval(parse(text = final_code$code), envir = .GlobalEnv)
-  )
+  if (result %in% c("cleared", "proceed")){
+    # * load inputs ----
+    eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
+    
+    # load libraries and functions ----
+    suppressMessages(
+      eval(parse(text = final_code$code), envir = .GlobalEnv)
+    )
+  }
 }

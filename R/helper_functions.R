@@ -127,7 +127,7 @@ validate_inputs <- function(file, output) {
     print("No inputs")
 
   } else if (sum(input_ref$missing) == 0) { # no missing references
-    message("\n\nAll inputs accounted for :)")
+    message("\nall inputs accounted for :)\n")
 
   } else { # missing references
     message("Here are the inputs you have listed:\n")
@@ -164,5 +164,85 @@ validate_inputs <- function(file, output) {
       prompt =
         "Without all of the input list items accounted for, some of your functions may not work.\nDo you want to continue? Press [Enter] to continue or [Esc] to cancel."
     )
+  }
+}
+
+#' Clear all objects in environment
+#'
+#' @param keep A regular expression of objects in environment to keep
+#' 
+#' @importFrom glue glue
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' df <- iris
+#' df2 <- iris
+#' my_df <- iris
+#' remove_objects(keep = "^df")
+#' }
+remove_objects <- function(keep = NULL) {
+  
+  all_objects <- ls(envir = .GlobalEnv)
+  base_regex <- "temp_|final_code"
+  
+  final_regex <- 
+    ifelse(missing(keep), base_regex, paste(c(base_regex, keep), collapse = "|")) %>% 
+    gsub("(\\|\\|)+", "", .) %>% 
+    gsub("\\|$", "", .) # ends with |, if keep = ""
+  
+  identify_objects <- !grepl(final_regex, all_objects)
+  remove_objects <- all_objects[identify_objects]
+  
+  # list items to be removed and then remove them
+  if (length(remove_objects) == 0) {
+    final_result <- "No items to remove"
+    message(final_result)
+    
+  } else {
+    # list items to be removed
+    message(
+      paste(
+        "these items will be removed or replaced when data is loaded:\n -", 
+        paste(remove_objects, collapse = "\n - ")
+      )
+    )  
+    
+    # list items to be kept
+    if (length(remove_objects) != length(all_objects)) {
+      message(
+        paste(
+          "\nthese items will be kept:\n -", 
+          paste(all_objects[!identify_objects], collapse = "\n - ")
+        )
+      )
+      
+      regex_phrase <- glue('editing this regex pattern: "{keep}"')
+    } else {
+      regex_phrase <- 'using the (keep = "") argument'
+    }
+    
+    # confirm selections
+    confirm <-
+      menu(
+        choices = c("Looks good to me", "I need to edit this list"),
+        title = "Do you want to continue? (Press 0 to exit)"
+      )
+    
+    # clear environment if enter is used
+    if (confirm == 0) {
+      final_result <- glue("Function ended because 0 was selected")
+      final_result
+      
+    } else if (confirm == 1){
+      rm(list = remove_objects, envir = .GlobalEnv)
+      final_result <- "cleared"
+      
+    } else if (confirm == 2) {
+      final_result <- glue("Please update the function by {regex_phrase}")
+      
+    }
+    
+    final_result
   }
 }

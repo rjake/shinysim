@@ -11,8 +11,8 @@ runtime: shiny
 
 ```{r input_demo, eval = FALSE}
 input <- list(
-  displ = "",
-  year = ""
+  displ = 1.8,
+  year = 2008
 )
 ```
 

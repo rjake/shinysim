@@ -4,17 +4,26 @@
 \alias{load_reactive_objects}
 \title{Add objects and inputs from a Rmd to your global environment}
 \usage{
-load_reactive_objects(file)
+load_reactive_objects(file, clear_environment = FALSE, restart = FALSE,
+  keep = NULL)
 }
 \arguments{
-\item{file}{}
-}
-\value{
-Will load all assignments from an Rmd into the global environment
+\item{file}{Rmd to be evaluated and loaded into global environment}
+
+\item{clear_environment}{When \code{TRUE}, will remove objects not named in \code{...}}
+
+\item{restart}{When \code{TRUE}, will restart the current R session. If you have R default to restore RData by default, you will need to use the \code{clear_environment} argument as well}
+
+\item{keep}{a regular expression of objects to keep when \code{clear_environment = TRUE}}
 }
 \description{
-The function will encourage the creation of an input list that provides dummy values that will allow your code to run. Reactive objects are converted to functions so they can still be called as df() etc.
+This function will run all assignments of your Rmd. In the process, this function will encourage the creation of a dummy \code{input} list that will mimic user input and allow your code to run. Lastly, reactive objects are converted to functions so they can still be called as \code{df()} etc.
 }
+\section{Warning}{
+
+This function has the ability to overwrite your objects in your global environment. Make sure you understand how this function works before moving forward.
+}
+
 \examples{
 \dontrun{
 system.file(package = "shinyloadr", "Rmd/test_dashboard.Rmd") \%>\% 
