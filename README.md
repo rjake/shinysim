@@ -18,7 +18,7 @@ Installation
   ```
 
 -->
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/rjake/shinyloadr) with:
 
 ``` r
 # install.packages("devtools")
@@ -57,3 +57,14 @@ This will result in the following output
     Do you want to continue? Press [Enter] to continue or [Esc] to cancel.
 
 Hitting `[Enter]` will then load these objects into your global environment.
+
+There are additional arguments you can use to resart R or to clear the environment. The `keep` and `remove` arguments take regular expressions as a pattern match. To get an exact match, use the `^` and `$` to signify the beginning and end (ex. `^your_text$`). To list objects, separate them with a `|`. as shown below.
+
+``` r
+load_reactive_objects(
+  ...,
+  clear_environment = TRUE, 
+  keep = "test_|^df$|raw_data", # objects to keep
+  remove = "input"              # objects to remove 
+)
+```

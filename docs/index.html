@@ -91,7 +91,7 @@
   ```
 
 -->
-<p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<p>You can install the development version from <a href="https://github.com/rjake/shinyloadr">GitHub</a> with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"rjake/shinyloadr"</span>)</code></pre></div>
 </div>
@@ -121,6 +121,13 @@ input &lt;- list(
 Without all of the input list items accounted for, some of your functions may not work.
 Do you want to continue? Press [Enter] to continue or [Esc] to cancel.</code></pre>
 <p>Hitting <code>[Enter]</code> will then load these objects into your global environment.</p>
+<p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> and <code>remove</code> arguments take regular expressions as a pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>(
+  ...,
+  <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span>
+  <span class="dt">remove =</span> <span class="st">"input"</span>              <span class="co"># objects to remove </span>
+)</code></pre></div>
 </div>
 </div>
   </div>
