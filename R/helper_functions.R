@@ -101,24 +101,23 @@ validate_inputs <- function(file, output) {
     unlist()
 
   input_ref <-
-    read_lines(file = file) %>%
-    tibble(text = trimws(.)) %>%
+    tibble(text = trimws(read_lines(file = file))) %>%
     mutate(
       line = row_number(),
-      text = str_remove(text, "#.*") # remove comments
+      text = str_remove(.data$text, "#.*") # remove comments
     ) %>%
-    filter(str_detect(text, "input\\$\\w+")) %>%
-    mutate(input_name = str_extract_all(text, "input\\$\\w+")) %>%
-    unnest(input_name) %>%
-    distinct(input_name, line) %>%
-    group_by(input_name = str_remove(input_name, "input\\$")) %>%
+    filter(str_detect(.data$text, "input\\$\\w+")) %>%
+    mutate(input_name = str_extract_all(.data$text, "input\\$\\w+")) %>%
+    unnest(.data$input_name) %>%
+    distinct(.data$input_name, .data$line) %>%
+    group_by(input_name = str_remove(.data$input_name, "input\\$")) %>%
     summarise(
       times_used = n(),
-      lines = glue_collapse(line, sep = ", ")
+      lines = glue_collapse(.data$line, sep = ", ")
     ) %>%
     ungroup() %>%
     mutate(
-      missing = (!input_name %in% input_demo_values | length(input_demo_values) == 0),
+      missing = (!.data$input_name %in% input_demo_values | length(input_demo_values) == 0),
       status = ifelse(missing, "missing", "have")
     )
 
@@ -132,8 +131,8 @@ validate_inputs <- function(file, output) {
   } else { # missing references
     message("Here are the inputs you have listed:\n")
     input_ref %>%
-      select(status, input = input_name, lines) %>%
-      arrange(status) %>%
+      select(.data$status, input = .data$input_name, .data$lines) %>%
+      arrange(.data$status) %>%
       pander::pandoc.table(justify = "left", split.cells = 50)
 
     input_df <-
@@ -172,6 +171,7 @@ validate_inputs <- function(file, output) {
 #' @param keep A regular expression of objects in environment to keep
 #' 
 #' @importFrom glue glue
+#' @importFrom utils menu
 #' @export
 #'
 #' @examples
