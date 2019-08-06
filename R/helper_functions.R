@@ -25,7 +25,7 @@ find_all_assignments <- function(file, output) {
 convert_assignments <- function(x){
   if (str_detect(x, "\\w+ <- .*reactive\\(")) {
     x <- x %>%
-      str_replace_all("reactive\\((\\{)?", "function\\(\\)\\{") %>%
+      str_replace_all("(shiny::)?reactive\\((\\{)?", "function\\(\\)\\{") %>%
       str_replace_all("\\}( )?\\)", "\\}") %>%
       str_replace_all("\\)$", "\\}") %>%
       str_replace_all('\"', "'")
