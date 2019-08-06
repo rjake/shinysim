@@ -6,7 +6,7 @@ test_that("shiny::reactive() and reactive() both work", {
   with_namespace <- "test <- reactive(abcd"
   
   expect_equal(
-    shinyloadr:::convert_assignments(no_namespace),
-    shinyloadr:::convert_assignments(with_namespace)
+    convert_assignments(no_namespace),
+    convert_assignments(with_namespace)
   )        
 })
