@@ -133,7 +133,7 @@ validate_inputs <- function(file, output) {
     input_ref %>%
       select(.data$status, input = .data$input_name, .data$lines) %>%
       arrange(.data$status) %>%
-      pander::pandoc.table(justify = "left", split.cells = 50)
+      pander::pandoc.table(justify = "left", split.cells = 25)
 
     input_df <-
       input_ref %>%
