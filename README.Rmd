@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-Troubleshooting reactive data in a flexdashboard can be difficult. The goal of this package is to convert reactive data frames into functions that will read from your raw data and become available in your global environment. The main function will also recommended that you put a dummy `input` list in your Rmd to simulate the reactive inputs. You can learn more about a dummy input list in [this vignette](../articles/tips-and-tricks.html).
+Troubleshooting reactive data in a flexdashboard can be difficult. The goal of this package is to convert reactive data frames into functions that will read from your raw data and become available in your global environment. The main function will also recommended that you put a dummy `input` list in your Rmd to simulate the reactive inputs. You can learn more about a dummy input list in [this vignette](https://rjake.github.io/shinyloadr/articles/tips-and-tricks.html).
 
 
 ## Installation
