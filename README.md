@@ -45,6 +45,7 @@ This will result in the following output
     1      displ           1     45     TRUE
     2       year           2  48,49     TRUE
 
+
     Add this code chunk to your Rmd:
     ```{r input_demo, eval = FALSE}
     input <- list(
@@ -53,10 +54,13 @@ This will result in the following output
     )
     ```
 
-    Without all of the input list items accounted for, some of your functions may not work.
-    Do you want to continue? Press [Enter] to continue or [Esc] to cancel.
+    WARNING: This next step will load all object assignments into your global environment.
+    Do you want to continue? 
 
-Hitting `[Enter]` will then load these objects into your global environment.
+    1: Yes
+    2: No
+
+Hitting `1` will then update your global environment with all raw data and assignments, your dummy `input` list, and all reactive objects converted to functions.
 
 There are additional arguments you can use to resart R or to clear the environment. The `keep` and `remove` arguments take regular expressions as a pattern match. To get an exact match, use the `^` and `$` to signify the beginning and end (ex. `^your_text$`). To list objects, separate them with a `|`. as shown below.
 

@@ -110,6 +110,7 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 1      displ           1     45     TRUE
 2       year           2  48,49     TRUE
 
+
 Add this code chunk to your Rmd:
 ```{r input_demo, eval = FALSE}
 input &lt;- list(
@@ -118,9 +119,12 @@ input &lt;- list(
 )
 ```
 
-Without all of the input list items accounted for, some of your functions may not work.
-Do you want to continue? Press [Enter] to continue or [Esc] to cancel.</code></pre>
-<p>Hitting <code>[Enter]</code> will then load these objects into your global environment.</p>
+WARNING: This next step will load all object assignments into your global environment.
+Do you want to continue? 
+
+1: Yes
+2: No</code></pre>
+<p>Hitting <code>1</code> will then update your global environment with all raw data and assignments, your dummy <code>input</code> list, and all reactive objects converted to functions.</p>
 <p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> and <code>remove</code> arguments take regular expressions as a pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>(
   ...,
