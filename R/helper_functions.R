@@ -158,12 +158,12 @@ validate_inputs <- function(file, output) {
       print(styler::style_text(update_input_code))
 
     }
-
-    readline(
-      prompt =
-        "Without all of the input list items accounted for, some of your functions may not work.\nDo you want to continue? Press [Enter] to continue or [Esc] to cancel."
-    )
   }
+  
+  menu(
+    choices = c("Yes", "No"),
+    title = "WARNING: This next step will load all object assignments into your global environment.\nDo you want to continue?"
+  )
 }
 
 #' Clear all objects in environment

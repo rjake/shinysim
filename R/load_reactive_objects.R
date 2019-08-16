@@ -25,48 +25,48 @@
 #'  load_reactive_objects()
 #' }
 #' 
-load_reactive_objects <- function(file, 
-                                  clear_environment = FALSE, 
-                                  restart = FALSE, 
-                                  keep = NULL){
-  
-  #create temp folder
+load_reactive_objects <- function(file,
+                                  clear_environment = FALSE,
+                                  restart = FALSE,
+                                  keep = NULL) {
+
+  # create temp folder
   temp_folder <- tempdir(check = TRUE)
   temp_R <- tempfile(tmpdir = temp_folder, fileext = ".R")
-  
+
   # select file if not provided
-  file_to_parse <- ifelse(missing(file), file.choose(), file) 
-  
+  file_to_parse <- ifelse(missing(file), file.choose(), file)
+
   # code as tibble
-  final_code <- 
+  final_code <-
     code_to_df(file_to_parse, temp_R)
-  
+
   # make sure demo inputs exist (if required)
-  validate_inputs(file_to_parse, temp_R)
-  
-  if (restart) {
-    rstudioapi::restartSession()
-  }
-  
-  if (clear_environment) {
-    # remove_object will return "cleared" if successful
-    result <- remove_objects(keep)
-    if(result != "cleared") {
-      stop(result, call. = FALSE)
+  confirm <- validate_inputs(file_to_parse, temp_R)
+
+  if (confirm == 1) {
+    if (restart) {
+      rstudioapi::restartSession()
     }
-    
-  } else {
-    result <- "proceed"
-    
-  }
-  
-  if (result %in% c("cleared", "proceed")){
-    # * load inputs ----
-    eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
-    
-    # load libraries and functions ----
-    suppressMessages(
-      eval(parse(text = final_code$code), envir = .GlobalEnv)
-    )
+
+    if (clear_environment) {
+      # remove_object will return "cleared" if successful
+      result <- remove_objects(keep)
+      if (result != "cleared") {
+        stop(result, call. = FALSE)
+      }
+    } else {
+      result <- "proceed"
+    }
+
+    if (result %in% c("cleared", "proceed")) {
+      # * load inputs ----
+      eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
+
+      # load libraries and functions ----
+      suppressMessages(
+        eval(parse(text = final_code$code), envir = .GlobalEnv)
+      )
+    }
   }
 }
