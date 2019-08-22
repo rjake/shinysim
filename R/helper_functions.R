@@ -15,6 +15,7 @@ find_all_assignments <- function(file, output) {
 }
 
 
+
 #' Convert reactive dataframes to functions
 #'
 #' @param x
@@ -25,14 +26,12 @@ find_all_assignments <- function(file, output) {
 convert_assignments <- function(x){
   if (str_detect(x, "\\w+ <- .*reactive\\(")) {
     x <- x %>%
-      str_replace_all("(shiny::)?reactive\\((\\{)?", "function\\(\\)\\{") %>%
-      str_replace_all("\\}( )?\\)", "\\}") %>%
-      str_replace_all("\\)$", "\\}") %>%
-      str_replace_all('\"', "'")
+      str_replace_all("(shiny::)?reactive\\(", "function() (")
   }
 
   return(x)
 }
+
 
 
 #' Convert R code to a data frame
@@ -49,6 +48,7 @@ code_to_df <- function(file, output) {
     mutate(code = convert_assignments(raw)) %>%
     ungroup()
 }
+
 
 
 #' Look for input <- demo
@@ -76,6 +76,41 @@ find_input_code <- function(file, output){
 }
 
 
+
+#' Look for input usage
+#'
+#' @param file
+#' @param output
+#'
+#' @description Prints a statement about the inputs that are either listed or missing
+#' @importFrom stringr str_extract_all str_remove
+#' @importFrom readr read_lines
+#' @importFrom tibble tibble
+#' @importFrom dplyr mutate row_number filter distinct group_by summarise n
+#' @importFrom tidyr unnest
+#' @importFrom glue glue glue_collapse
+#'
+#'
+input_usage <- function(file) {
+  tibble(text = trimws(read_lines(file = file))) %>%
+    mutate(
+      line = row_number(),
+      text = str_remove(.data$text, "#.*") # remove comments
+    ) %>%
+    filter(str_detect(.data$text, "input\\$[\\w\\._]+")) %>%
+    mutate(input_name = str_extract_all(.data$text, "input\\$[\\w\\._]+")) %>%
+    unnest(.data$input_name) %>%
+    distinct(.data$input_name, .data$line) %>%
+    group_by(input_name = str_remove(.data$input_name, "input\\$")) %>%
+    summarise(
+      times_used = n(),
+      lines = glue_collapse(.data$line, sep = ", ")
+    ) %>%
+    ungroup()
+}
+
+
+
 #' Validate demo input statement
 #'
 #' @param file
@@ -101,21 +136,7 @@ validate_inputs <- function(file, output) {
     unlist()
 
   input_ref <-
-    tibble(text = trimws(read_lines(file = file))) %>%
-    mutate(
-      line = row_number(),
-      text = str_remove(.data$text, "#.*") # remove comments
-    ) %>%
-    filter(str_detect(.data$text, "input\\$\\w+")) %>%
-    mutate(input_name = str_extract_all(.data$text, "input\\$\\w+")) %>%
-    unnest(.data$input_name) %>%
-    distinct(.data$input_name, .data$line) %>%
-    group_by(input_name = str_remove(.data$input_name, "input\\$")) %>%
-    summarise(
-      times_used = n(),
-      lines = glue_collapse(.data$line, sep = ", ")
-    ) %>%
-    ungroup() %>%
+    input_usage(file) %>%
     mutate(
       missing = (!.data$input_name %in% input_demo_values | length(input_demo_values) == 0),
       status = ifelse(missing, "missing", "have")
@@ -165,6 +186,8 @@ validate_inputs <- function(file, output) {
     title = "WARNING: This next step will load all object assignments into your global environment.\nDo you want to continue?"
   )
 }
+
+
 
 #' Clear all objects in environment
 #'
