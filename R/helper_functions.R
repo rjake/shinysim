@@ -132,8 +132,7 @@ find_input_code <- function(file, output){
 
 #' Look for input usage
 #'
-#' @param file
-#' @param output
+#' @param file file to evaluate
 #'
 #' @description Prints a statement about the inputs that are either listed or missing
 #' @importFrom stringr str_extract_all str_remove
@@ -142,16 +141,20 @@ find_input_code <- function(file, output){
 #' @importFrom dplyr mutate row_number filter distinct group_by summarise n
 #' @importFrom tidyr unnest
 #' @importFrom glue glue glue_collapse
-#'
-#'
+#'@examples
+#'\dontrun{
+#' input_usage(file = "inst/shiny/server.R")
+#' input_usage(file = "inst/Rmd/flexdashboard_demo.Rmd")
+#' }
+#' 
 input_usage <- function(file) {
   tibble(text = trimws(read_lines(file = file))) %>%
     mutate(
       line = row_number(),
       text = str_remove(.data$text, "#.*") # remove comments
     ) %>%
-    filter(str_detect(.data$text, "input\\$[\\w\\._]+")) %>%
-    mutate(input_name = str_extract_all(.data$text, "input\\$[\\w\\._]+")) %>%
+    filter(str_detect(.data$text, "input\\$[\\w\\._0-9]+")) %>%
+    mutate(input_name = str_extract_all(.data$text, "input\\$[\\w\\._0-9]+")) %>%
     unnest(.data$input_name) %>%
     distinct(.data$input_name, .data$line) %>%
     group_by(input_name = str_remove(.data$input_name, "input\\$")) %>%
