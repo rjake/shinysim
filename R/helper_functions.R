@@ -46,7 +46,7 @@ valid_assignments <- function() {
 #' @importFrom stringr str_detect
 #'
 find_all_assignments <- function(file) {
-  strings <- paste0("^(library|", valid_assginments(), " <-)")
+  strings <- paste0("^(library|", valid_assignments(), " <-)")
   
   x <- purl(file, output = tempfile(), quiet = TRUE)
   r_code <- as.character(parse(x)) %>% trimws()
@@ -82,8 +82,8 @@ convert_assignments <- function(x){
 #' @importFrom tibble tibble
 #' @importFrom dplyr rowwise mutate ungroup
 #'
-code_to_df <- function(file, output) {
-  tibble(raw = as.character(find_all_assignments(file, output))) %>%
+code_to_df <- function(file) {
+  tibble(raw = as.character(find_all_assignments(file))) %>%
     rowwise() %>%
     mutate(code = convert_assignments(raw)) %>%
     ungroup()
