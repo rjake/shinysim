@@ -169,8 +169,7 @@ input_usage <- function(file) {
 
 #' Validate demo input statement
 #'
-#' @param file
-#' @param output
+#' @param file file to evaluate
 #'
 #' @description Prints a statement about the inputs that are either listed or missing
 #' @importFrom stringr str_extract_all str_remove
@@ -182,65 +181,71 @@ input_usage <- function(file) {
 #' @importFrom glue glue glue_collapse
 #' @importFrom styler style_text
 #'
-#'
-validate_inputs <- function(file, output) {
-  input_code <- find_input_code(file, output)
-
+#' @examples 
+#' \dontrun{
+#' validate_inputs("inst/Rmd/test_dashboard_missing_inputs.Rmd")
+#' validate_inputs("inst/Rmd/test_dashboard_no_inputs.Rmd")
+#' validate_inputs("inst/shiny/server.R")
+#' }
+validate_inputs <- function(file) {
+  input_code <- find_input_code(file)
+  
   input_demo_values <-
     input_code %>%
-    str_extract_all("(\\w+)(?=\\s\\=)") %>%
+    str_extract_all("([\\w\\.\\_0:9]+)(?=\\s\\=)") %>%
     unlist()
-
+  
   input_ref <-
     input_usage(file) %>%
     mutate(
       missing = (!.data$input_name %in% input_demo_values | length(input_demo_values) == 0),
       status = ifelse(missing, "missing", "have")
     )
-
-
+  
+  
   if (nrow(input_ref) == 0) { # no inputs
     print("No inputs")
-
+    
   } else if (sum(input_ref$missing) == 0) { # no missing references
     message("\nall inputs accounted for :)\n")
-
+    
   } else { # missing references
     message("Here are the inputs you have listed:\n")
     input_ref %>%
       select(.data$status, input = .data$input_name, .data$lines) %>%
       arrange(.data$status) %>%
       pander::pandoc.table(justify = "left", split.cells = 25)
-
+    
     input_df <-
       input_ref %>%
       filter(missing == TRUE)
-
+    
     input_add <-
       glue('{input_df$input_name} = ""') %>%
       glue_collapse(sep = ", \n")
-
+    
+    is_rmd <- str_detect(file, "[rR]md$")
+    
     if (length(input_code) == 0) { # no input demo, create new list
       update_input_code <- glue("input <- list({input_add})")
-
-      message("\n# Add this code chunk to your Rmd:\n")
-      message("```{r input_demo, eval = FALSE}")
-      print(styler::style_text(update_input_code))
-      message("```")
-
+      
+      if (is_rmd) {
+        message("\n# Add this code chunk to your Rmd:\n")
+        message("```{r input_demo, eval = FALSE}")
+        print(styler::style_text(update_input_code))
+        message("```")
+      } else {# is R file
+        message("\n# Add this code chunk to your R file:\n")
+        print(styler::style_text(glue("dummy_{update_input_code}")))
+      }
     } else { # append list
       message("Update code:")
       update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
       # str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
       print(styler::style_text(update_input_code))
-
+      
     }
   }
-  
-  menu(
-    choices = c("Yes", "No"),
-    title = "WARNING: This next step will load all object assignments into your global environment.\nDo you want to continue?"
-  )
 }
 
 
