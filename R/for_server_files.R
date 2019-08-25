@@ -47,7 +47,6 @@ char_between <- function(text, pattern = c("c", "p")) {
 #'   eval(envir = .GlobalEnv)
 #' }
 parse_server_file <- function(file) {
-  output <<- list()
   
   raw_code <- parse(file)
   
