@@ -1,3 +1,17 @@
+#' Find text between brackets or parentheses
+#'
+#' @param text the text to scan
+#' @param pattern look between "c" curly braces or "p" parenthese 
+#'
+#' @export
+#'
+#' @examples
+#' "here is text (between two parentheses), as an example" %>% 
+#'   char_between("p")
+#'   
+#' "here is text {between two curly braces}, as an example" %>% 
+#'   char_between("c")
+#'   
 char_between <- function(text, pattern = c("c", "p")) {
   pattern <- match.arg(pattern)
   regex_pattern <-
@@ -22,7 +36,16 @@ char_between <- function(text, pattern = c("c", "p")) {
 
 
 
-
+#' Parse server file for assignments & inputst
+#'
+#' @param file file to parse
+#' 
+#' @export
+#' @examples 
+#' \dontrun{
+#' parse_server_file(file = "inst/shiny/server.R") %>% 
+#'   eval(envir = .GlobalEnv)
+#' }
 parse_server_file <- function(file) {
   output <- list()
   
