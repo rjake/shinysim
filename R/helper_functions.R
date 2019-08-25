@@ -97,25 +97,35 @@ code_to_df <- function(file, output) {
 #' Look for input <- demo
 #'
 #' @param file
-#' @param output
 #'
 #' @importFrom readr read_file
 #' @importFrom stringr str_replace_all
 #' @importFrom knitr purl
-#'
+#' @examples 
+#' \dontrun{
+#' find_input_code("inst/shiny/server.R")
+#' find_input_code("inst/Rmd/flexdashboard_demo.Rmd")
+#' }
 find_input_code <- function(file, output){
-  replace_evals <-
-    read_file(file) %>%
-    str_replace_all("eval = F(ALSE)?", "eval = TRUE")
-
-  # create R doc from Rmd
-  knitr::purl(text = replace_evals, output = output, quiet = TRUE)
-
-  parsed <- parse(output)
-
-  input_code <- parsed[grepl("input <-", parsed)]
-
-  as.character(input_code)
+  # if an R file just parse
+  if (grepl("\\.R$", file, ignore.case = TRUE)) {
+    parsed <- parse(file)
+    
+  } else {# if an Rmd, convert eval = F statement to T to see if "input <-" exists
+    replace_evals <-
+      read_file(file) %>%
+      str_replace_all("eval = F(ALSE)?", "eval = TRUE")
+    
+    output = tempfile()
+    # create R doc from Rmd
+    knitr::purl(text = replace_evals, output = output, quiet = TRUE)
+    
+    parsed <- parse(output)
+  }
+  
+  # R files should use "dummy_input <-", Rmd should use "input <-"
+  input_code <- parsed[grepl("(dummy_)?input <-", parsed)]
+  as.character(gsub("dummy_", "", input_code))
 }
 
 
