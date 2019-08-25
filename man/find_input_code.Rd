@@ -7,8 +7,14 @@
 find_input_code(file, output)
 }
 \arguments{
-\item{output}{}
+\item{file}{}
 }
 \description{
 Look for input <- demo
+}
+\examples{
+\dontrun{
+find_input_code("inst/shiny/server.R")
+find_input_code("inst/Rmd/flexdashboard_demo.Rmd")
+}
 }

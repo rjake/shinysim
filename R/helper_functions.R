@@ -39,8 +39,7 @@ valid_assignments <- function() {
 
 #' Find all libraries and assignments
 #'
-#' @param file
-#' @param output
+#' @param file to evaluate
 #'
 #' @description A data frame of all assignments and libraries
 #' @importFrom knitr purl
@@ -61,8 +60,7 @@ find_all_assignments <- function(file) {
 
 #' Convert reactive dataframes to functions
 #'
-#' @param x
-#' @description Code will break if additional arguments are present
+#' @param x text to be converted
 #' @noRd
 #' @importFrom stringr str_detect str_replace_all
 #'
@@ -79,8 +77,7 @@ convert_assignments <- function(x){
 
 #' Convert R code to a data frame
 #'
-#' @param file
-#' @param output
+#' @param file to evaluate
 #'
 #' @importFrom tibble tibble
 #' @importFrom dplyr rowwise mutate ungroup

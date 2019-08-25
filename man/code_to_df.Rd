@@ -7,7 +7,7 @@
 code_to_df(file, output)
 }
 \arguments{
-\item{output}{}
+\item{file}{to evaluate}
 }
 \description{
 Convert R code to a data frame
