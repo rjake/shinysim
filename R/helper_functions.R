@@ -29,6 +29,14 @@ which_file <- function(file) {
 }
 
 
+#' Valid strings for assignments/column names
+#'
+#' @export
+valid_assignments <- function() {
+  "[\\w\\.\\$0:9]+"
+}
+
+
 #' Find all libraries and assignments
 #'
 #' @param file
