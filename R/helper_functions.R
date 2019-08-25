@@ -44,12 +44,16 @@ valid_assignments <- function() {
 #'
 #' @description A data frame of all assignments and libraries
 #' @importFrom knitr purl
+#' @importFrom stringr str_detect
 #'
-find_all_assignments <- function(file, output) {
-  x <- purl(file, output = output, quiet = TRUE)
+find_all_assignments <- function(file) {
+  strings <- paste0("^(library|", valid_assginments(), " <-)")
+  
+  x <- purl(file, output = tempfile(), quiet = TRUE)
   r_code <- as.character(parse(x)) %>% trimws()
-  assignments <- r_code[grepl("^(\\w+ <-|library)", r_code)]
-
+  
+  assignments <- r_code[str_detect(r_code, strings)]
+  
   return(assignments)
 }
 
