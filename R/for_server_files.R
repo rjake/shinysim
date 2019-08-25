@@ -4,6 +4,8 @@
 #' @param pattern look between "c" curly braces or "p" parenthese 
 #'
 #' @export
+#' @importFrom dplyr case_when
+#' @importFrom stringr str_locate_all
 #'
 #' @examples
 #' "here is text (between two parentheses), as an example" %>% 

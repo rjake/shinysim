@@ -93,7 +93,7 @@ code_to_df <- function(file) {
 
 #' Look for input <- demo
 #'
-#' @param file
+#' @param file to evaluate
 #'
 #' @importFrom readr read_file
 #' @importFrom stringr str_replace_all
@@ -103,7 +103,7 @@ code_to_df <- function(file) {
 #' find_input_code("inst/shiny/server.R")
 #' find_input_code("inst/Rmd/flexdashboard_demo.Rmd")
 #' }
-find_input_code <- function(file, output){
+find_input_code <- function(file){
   # if an R file just parse
   if (grepl("\\.R$", file, ignore.case = TRUE)) {
     parsed <- parse(file)

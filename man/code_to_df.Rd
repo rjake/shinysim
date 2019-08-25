@@ -4,7 +4,7 @@
 \alias{code_to_df}
 \title{Convert R code to a data frame}
 \usage{
-code_to_df(file, output)
+code_to_df(file)
 }
 \arguments{
 \item{file}{to evaluate}

@@ -4,10 +4,10 @@
 \alias{find_input_code}
 \title{Look for input <- demo}
 \usage{
-find_input_code(file, output)
+find_input_code(file)
 }
 \arguments{
-\item{file}{}
+\item{file}{to evaluate}
 }
 \description{
 Look for input <- demo
