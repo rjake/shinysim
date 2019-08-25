@@ -4,11 +4,18 @@
 \alias{validate_inputs}
 \title{Validate demo input statement}
 \usage{
-validate_inputs(file, output)
+validate_inputs(file)
 }
 \arguments{
-\item{output}{}
+\item{file}{file to evaluate}
 }
 \description{
 Prints a statement about the inputs that are either listed or missing
+}
+\examples{
+\dontrun{
+validate_inputs("inst/Rmd/test_dashboard_missing_inputs.Rmd")
+validate_inputs("inst/Rmd/test_dashboard_no_inputs.Rmd")
+validate_inputs("inst/shiny/server.R")
+}
 }

@@ -4,10 +4,10 @@
 \alias{find_all_assignments}
 \title{Find all libraries and assignments}
 \usage{
-find_all_assignments(file, output)
+find_all_assignments(file)
 }
 \arguments{
-\item{output}{}
+\item{file}{to evaluate}
 }
 \description{
 A data frame of all assignments and libraries

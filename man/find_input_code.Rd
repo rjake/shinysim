@@ -4,11 +4,17 @@
 \alias{find_input_code}
 \title{Look for input <- demo}
 \usage{
-find_input_code(file, output)
+find_input_code(file)
 }
 \arguments{
-\item{output}{}
+\item{file}{to evaluate}
 }
 \description{
 Look for input <- demo
+}
+\examples{
+\dontrun{
+find_input_code("inst/shiny/server.R")
+find_input_code("inst/Rmd/flexdashboard_demo.Rmd")
+}
 }

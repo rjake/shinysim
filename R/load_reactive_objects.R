@@ -31,18 +31,24 @@ load_reactive_objects <- function(file,
                                   keep = NULL) {
 
   # create temp folder
-  temp_folder <- tempdir(check = TRUE)
-  temp_R <- tempfile(tmpdir = temp_folder, fileext = ".R")
+  #temp_folder <- tempdir(check = TRUE)
+  #temp_R <- tempfile(tmpdir = temp_folder, fileext = ".R")
 
   # select file if not provided
-  file_to_parse <- ifelse(missing(file), file.choose(), file)
+  file_to_parse <- which_file(file)
 
-  # code as tibble
-  final_code <-
-    code_to_df(file_to_parse, temp_R)
+  # check if Rmd or R
+  is_rmd <- str_detect(file_to_parse, "[rR]md$")
 
   # make sure demo inputs exist (if required)
-  confirm <- validate_inputs(file_to_parse, temp_R)
+  validate_inputs(file_to_parse)
+  
+  # confirm to continue
+  confirm <-   menu(
+    choices = c("Yes", "No"),
+    title = "WARNING: This next step will load all object assignments into your global environment.\nDo you want to continue?"
+  )
+  
 
   if (confirm == 1) {
     if (restart) {
@@ -61,11 +67,25 @@ load_reactive_objects <- function(file,
 
     if (result %in% c("cleared", "proceed")) {
       # * load inputs ----
-      eval(parse(text = find_input_code(file_to_parse, temp_R)), envir = .GlobalEnv)
+      eval(parse(text = find_input_code(file_to_parse)), envir = .GlobalEnv)
 
-      # load libraries and functions ----
+      # find all libraries and functions ----
+      
+        if (is_rmd) { 
+          # code as tibble (orig + converted functions)
+          final_code <- code_to_df(file_to_parse)
+          # parsed code
+          parsed_code <- parse(text = final_code$code)
+        } else {
+          # create ouput list so assignments don't break
+          assign("output", list(), .GlobalEnv)
+          # parsed code
+          parsed_code <- parse_server_file(file_to_parse)
+        }
+      
+      # final evaluation
       suppressMessages(
-        eval(parse(text = final_code$code), envir = .GlobalEnv)
+        eval(parsed_code, envir = .GlobalEnv)
       )
     }
   }
