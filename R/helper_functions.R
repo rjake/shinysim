@@ -232,7 +232,7 @@ validate_inputs <- function(file) {
         print(styler::style_text(update_input_code))
         message("```")
       } else {# is R file
-        message("\n# Add this code chunk to your R file:\n")
+        message("\n# Add this code to your R file:\n")
         print(styler::style_text(glue("dummy_{update_input_code}")))
       }
     } else { # append list
