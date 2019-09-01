@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • shinyloadr</title>
+<title>Show UI output in viewer pane — view_ui • shinyloadr</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Show UI output in viewer pane — view_ui" />
+
+<meta property="og:description" content="Show UI output in viewer pane" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -101,108 +104,60 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Show UI output in viewer pane</h1>
+    
+    <div class="hidden name"><code>view_ui.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Show UI output in viewer pane</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="char_between.html">char_between()</a></code> </p>
-        </td>
-        <td><p>Find text between brackets or parentheses</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="code_to_df.html">code_to_df()</a></code> </p>
-        </td>
-        <td><p>Convert R code to a data frame</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="find_all_assignments.html">find_all_assignments()</a></code> </p>
-        </td>
-        <td><p>Find all libraries and assignments</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="find_input_code.html">find_input_code()</a></code> </p>
-        </td>
-        <td><p>Look for input &lt;- demo</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="input_usage.html">input_usage()</a></code> </p>
-        </td>
-        <td><p>Look for input usage</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="load_reactive_objects.html">load_reactive_objects()</a></code> </p>
-        </td>
-        <td><p>Add objects and inputs from a Rmd to your global environment</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="parse_server_file.html">parse_server_file()</a></code> </p>
-        </td>
-        <td><p>Parse server file for assignments &amp; inputst</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="remove_objects.html">remove_objects()</a></code> </p>
-        </td>
-        <td><p>Clear all objects in environment</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="validate_inputs.html">validate_inputs()</a></code> </p>
-        </td>
-        <td><p>Validate demo input statement</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="valid_assignments.html">valid_assignments()</a></code> </p>
-        </td>
-        <td><p>Valid strings for assignments/column names</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="view_ui.html">view_ui()</a></code> </p>
-        </td>
-        <td><p>Show UI output in viewer pane</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="which_file.html">which_file()</a></code> </p>
-        </td>
-        <td><p>Select file to use</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>view_ui</span>(<span class='no'>x</span>, <span class='kw'>close_after</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>ui content (actionButton, selectInput, valueBox), defaults to last output, expects an object with class "shiny.tag"</p></td>
+    </tr>
+    <tr>
+      <th>close_after</th>
+      <td><p>number of seconds to display UI in Viewer panel. If NULL, app must be stopped manually before more code can be run.</p></td>
+    </tr>
     </table>
-  </div>
+    
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># run this line</span>
+<span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/shiny/topics/selectInput'>selectInput</a></span>(
+  <span class='st'>"state"</span>,
+  <span class='st'>"Choose a state:"</span>,
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
+    <span class='kw'>`East Coast`</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"NY"</span>, <span class='st'>"NJ"</span>, <span class='st'>"CT"</span>),
+    <span class='kw'>`West Coast`</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"WA"</span>, <span class='st'>"OR"</span>, <span class='st'>"CA"</span>),
+    <span class='kw'>`Midwest`</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"MN"</span>, <span class='st'>"WI"</span>, <span class='st'>"IA"</span>)
+  )
+)
+<span class='co'># the output will automatically be used here</span>
+<span class='fu'>view_ui</span>(<span class='kw'>close_after</span> <span class='kw'>=</span> <span class='fl'>6</span>)
+<span class='co'># }</span><div class='input'>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+            
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

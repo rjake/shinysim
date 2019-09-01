@@ -92,17 +92,17 @@
 
 -->
 <p>You can install the development version from <a href="https://github.com/rjake/shinyloadr">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># install.packages("devtools")</span></a>
-<a class="sourceLine" id="cb1-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"rjake/shinyloadr"</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"rjake/shinyloadr"</span>)</code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>There is a dummy flexdashboard available when the package is installed for you to see how this works.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinyloadr)</a>
-<a class="sourceLine" id="cb2-2" title="2"></a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="dt">package =</span> <span class="st">"shinyloadr"</span>, <span class="st">"Rmd/test_dashboard_no_inputs.Rmd"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="st"> </span><span class="kw">load_reactive_objects</span>()</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinyloadr)
+
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="dt">package =</span> <span class="st">"shinyloadr"</span>, <span class="st">"Rmd/test_dashboard_no_inputs.Rmd"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st"> </span><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>()</code></pre></div>
 <p>This will result in the following output</p>
 <pre><code>Here are the inputs you have listed:
 
@@ -126,12 +126,12 @@ Do you want to continue?
 2: No</code></pre>
 <p>Hitting <code>1</code> will then update your global environment with all raw data and assignments, your dummy <code>input</code> list, and all reactive objects converted to functions.</p>
 <p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> and <code>remove</code> arguments take regular expressions as a pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">load_reactive_objects</span>(</a>
-<a class="sourceLine" id="cb4-2" title="2">  ...,</a>
-<a class="sourceLine" id="cb4-3" title="3">  <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, </a>
-<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span></a>
-<a class="sourceLine" id="cb4-5" title="5">  <span class="dt">remove =</span> <span class="st">"input"</span>              <span class="co"># objects to remove </span></a>
-<a class="sourceLine" id="cb4-6" title="6">)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>(
+  ...,
+  <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span>
+  <span class="dt">remove =</span> <span class="st">"input"</span>              <span class="co"># objects to remove </span>
+)</code></pre></div>
 </div>
 </div>
   </div>
