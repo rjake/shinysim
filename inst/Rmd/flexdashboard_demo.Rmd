@@ -47,7 +47,7 @@ radioGroupButtons( # for categorical variables
 
 sliderInput(
   inputId = "displ", # referenced as input$displ
-  label = "Select Weight:",
+  label = "Select Engine Displacement:",
   value = range(raw_data$displ), # default selection, you can move the range around
   min = (min(raw_data$displ)),
   max = (max(raw_data$displ)),
