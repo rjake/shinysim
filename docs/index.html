@@ -79,7 +79,7 @@
 <a href="#shinysim" class="anchor"></a>shinysim</h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>Troubleshooting reactive data in a flexdashboard can be difficult. The goal of this package is to convert reactive data frames into functions that will read from your raw data and become available in your global environment. The main function will also recommended that you put a dummy <code>input</code> list in your Rmd to simulate the reactive inputs. You can learn more about a dummy input list in <a href="https://rjake.github.io/shinysim/articles/tips-and-tricks.html">this vignette</a>.</p>
+<p>Troubleshooting reactive data in a shiny app or flexdashboard can be difficult. The goal of this package is to simulate the reactive environment that is created when you launch your app without having to actually run the app. It is the hope that this will save you time and allow you to itterate more quickly. The package converts reactive data frames into functions that will read from your raw data and become available in your global environment. The main function will also recommended that you put a create <code>dummy_input</code> in your script or just <code>input</code> in a flexdashboard to simulate the reactive inputs. You can learn more about dummy input lists in <a href="https://rjake.github.io/shinysim/articles/tips-and-tricks.html">this vignette</a>. There is also a function to view your UI elemnts in the viewer pane (see below).</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -95,9 +95,9 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"rjake/shinysim"</span>)</code></pre></div>
 </div>
-<div id="example" class="section level2">
+<div id="usage" class="section level2">
 <h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
+<a href="#usage" class="anchor"></a>Usage</h2>
 <p>There is a dummy flexdashboard available when the package is installed for you to see how this works.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinysim)
 
@@ -124,14 +124,38 @@ Do you want to continue?
 
 1: Yes
 2: No</code></pre>
-<p>Hitting <code>1</code> will then update your global environment with all raw data and assignments, your dummy <code>input</code> list, and all reactive objects converted to functions.</p>
-<p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> and <code>remove</code> arguments take regular expressions as a pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
+<p>Hitting <code>1</code> will then update your global environment with all raw data and assignments, your dummy <code>input</code> list, and all reactive objects converted to functions. As functions, the code will keep all the data manipulation and reference your dummy <code>input</code> list. Note: <strong>this function does not change your files</strong>; the manipulation happens within the function.</p>
+<p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> argument takes a regular expression as the pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load_reactive_objects</span>(
   ...,
   <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, 
   <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span>
-  <span class="dt">remove =</span> <span class="st">"input"</span>              <span class="co"># objects to remove </span>
 )</code></pre></div>
+<p>The package also has a function to view UI elements in one of two ways:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(
+  <span class="st">"state"</span>,
+  <span class="st">"Choose a state:"</span>,
+  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(
+    <span class="dt">East =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"NY"</span>, <span class="st">"NJ"</span>, <span class="st">"CT"</span>),
+    <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),
+    <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)
+  )
+)
+
+<span class="co"># the output will automatically be used here</span>
+<span class="kw">view_ui</span>()</code></pre></div>
+<p>You can also pipe it</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(
+  <span class="st">"state"</span>,
+  <span class="st">"Choose a state:"</span>,
+  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(
+    <span class="dt">East =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"NY"</span>, <span class="st">"NJ"</span>, <span class="st">"CT"</span>),
+    <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),
+    <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)
+  )
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">view_ui</span>(<span class="dt">close_after =</span> <span class="ot">NULL</span>)</code></pre></div>
+<p>Note that <code>close_after</code> is set to <code>NULL</code> in this example. The <code>view_ui()</code> function launches an app and defualts to closing after 5 seconds. You can adjusts how long it runs or use <code>NULL</code> and stop it manually by using the stop sign.:red_circle:</p>
+<p><img src="reference/figures/view_ui.png"></p>
 </div>
 </div>
   </div>
