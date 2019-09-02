@@ -2,7 +2,7 @@
 #'
 #' @param x ui content (actionButton, selectInput, valueBox), defaults to last output, expects an object with class "shiny.tag"
 #' @param close_after number of seconds to display UI in Viewer panel. If NULL, app must be stopped manually before more code can be run.
-#' @importFrom shiny shinyApp fluidPage runApp
+#' @importFrom shiny shinyApp fluidPage runApp stopApp
 #' @importFrom rstudioapi viewer
 #' @examples 
 #' \dontrun{
