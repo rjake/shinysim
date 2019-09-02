@@ -1,4 +1,4 @@
-Package: shinyloadr
+Package: shinysim
 Title: Loads reactive data frames and mock input list into environment
 Version: 0.1.0
 Authors@R: person("Jake", "Riley", email = "rjake@sas.upenn.edu", role = c("aut", "cre"))

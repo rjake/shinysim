@@ -1,5 +1,5 @@
 library(testthat)
-library(shinyloadr)
+library(shinysim)
 
 test_that("shiny::reactive() and reactive() both work", {
   no_namespace <- "test <- shiny::reactive(abcd"
