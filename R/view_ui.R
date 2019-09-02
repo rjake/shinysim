@@ -35,7 +35,7 @@ view_ui <- function(x, close_after = 5) {
   
   server = function(input, output) {
     if (!is.null(close_after)){
-      Sys.sleep(5)
+      Sys.sleep(close_after)
       stopApp()
     }
   }
