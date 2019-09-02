@@ -26,13 +26,13 @@ This function has the ability to overwrite your objects in your global environme
 
 \examples{
 \dontrun{
-system.file(package = "shinyloadr", "Rmd/test_dashboard.Rmd") \%>\% 
+system.file(package = "shinysim", "Rmd/test_dashboard.Rmd") \%>\% 
  load_reactive_objects()
 
-system.file(package = "shinyloadr", "Rmd/test_dashboard_no_inputs.Rmd") \%>\% 
+system.file(package = "shinysim", "Rmd/test_dashboard_no_inputs.Rmd") \%>\% 
  load_reactive_objects()
 
-system.file(package = "shinyloadr", "Rmd/test_dashboard_missing_inputs.Rmd") \%>\% 
+system.file(package = "shinysim", "Rmd/test_dashboard_missing_inputs.Rmd") \%>\% 
  load_reactive_objects()
 }
 
