@@ -36,8 +36,27 @@ valid_assignments <- function() {
   "[\\w\\.\\$0:9]+"
 }
 
+#' Valid strings for assignments/column names
+#'
+#' @export
+strings_to_find <- function() {
+  paste0("^(library|", valid_assignments(), " <-)")
+}
 
-#' Find all libraries and assignments
+
+#' Find all libraries and assignments for R files
+#'
+#' @param x code to evaluate
+#'
+#' @description A data frame of all assignments and libraries
+#' @importFrom knitr purl
+#' @importFrom stringr str_detect
+#'
+find_all_assignments_r <- function(x) {
+  x[str_detect(x, strings_to_find())]
+}
+
+#' Find all libraries and assignments for rmd
 #'
 #' @param file to evaluate
 #'
@@ -45,17 +64,11 @@ valid_assignments <- function() {
 #' @importFrom knitr purl
 #' @importFrom stringr str_detect
 #'
-find_all_assignments <- function(file) {
-  strings <- paste0("^(library|", valid_assignments(), " <-)")
-  
-  x <- purl(file, output = tempfile(), quiet = TRUE)
-  r_code <- as.character(parse(x)) %>% trimws()
-  
-  assignments <- r_code[str_detect(r_code, strings)]
-  
-  return(assignments)
+find_all_assignments_rmd <- function(file) {
+  tmp <- purl(file, output = tempfile(), quiet = TRUE)
+  x <- as.character(parse(tmp)) %>% trimws()
+  find_all_assignments_r(x)
 }
-
 
 
 #' Convert reactive dataframes to functions
@@ -77,13 +90,13 @@ convert_assignments <- function(x){
 
 #' Convert R code to a data frame
 #'
-#' @param file to evaluate
+#' @param code to evaluate
 #'
 #' @importFrom tibble tibble
 #' @importFrom dplyr rowwise mutate ungroup
 #'
-code_to_df <- function(file) {
-  tibble(raw = as.character(find_all_assignments(file))) %>%
+code_to_df <- function(code) {
+  tibble(raw = as.character(code)) %>%
     rowwise() %>%
     mutate(code = convert_assignments(raw)) %>%
     ungroup()
@@ -326,4 +339,21 @@ remove_objects <- function(keep = NULL) {
     
     final_result
   }
+}
+
+
+eval_code <- function(x, envir = .GlobalEnv) {
+  as_char_x <- as.character(x)
+  
+  tryCatch(
+    (eval(x, envir = envir)),
+    error = function(e) {
+        message("there was an error")
+        print(glue::glue(as_char_x))
+    },
+    warning = function(w) {
+        message("there was a warning")
+        print(glue::glue(as_char_x))
+    }
+  )
 }
