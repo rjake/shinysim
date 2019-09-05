@@ -50,7 +50,7 @@ char_between <- function(text, pattern = c("c", "p")) {
 #' }
 parse_server_file <- function(file) {
   
-  raw_code <- parse(file)
+  raw_code <- as.character(parse(file))
   
   server_line <- grep("^(shiny)?server\\b", raw_code, ignore.case = TRUE)
   
@@ -62,8 +62,8 @@ parse_server_file <- function(file) {
     warning("server not found, using whole file")
     new_code <-
       raw_code %>% 
-      convert_assignments() %>% 
-      parse(text = .)
+      convert_assignments() #%>% 
+      #parse(text = .)
   }
   
   
@@ -71,10 +71,10 @@ parse_server_file <- function(file) {
   
   new_code <-
     char_between(server_code) %>% 
-    convert_assignments() %>% 
-    parse(text = .)
+    convert_assignments() #%>% 
+    #parse(text = .)
   
-  to_eval <- expression()
+  to_eval <- ""#expression()
   
   # if the first line is "server <- " or server is not specified
   if (server_line == 1 | server_missing) {
