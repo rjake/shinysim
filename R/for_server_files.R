@@ -45,10 +45,10 @@ char_between <- function(text, pattern = c("c", "p")) {
 #' @export
 #' @examples 
 #' \dontrun{
-#' parse_server_file(file = "inst/shiny/server.R") %>% 
+#' breakout_server_code(file = "inst/shiny/server.R") %>% 
 #'   eval(envir = .GlobalEnv)
 #' }
-parse_server_file <- function(file) {
+breakout_server_code <- function(file) {
   
   raw_code <- as.character(parse(file))
   
