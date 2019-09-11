@@ -3,6 +3,7 @@ Title: Loads reactive data frames and mock input list into environment
 Version: 0.1.0
 Authors@R: person("Jake", "Riley", email = "rjake@sas.upenn.edu", role = c("aut", "cre"))
 Description: Troubleshooting reactive data in flexdashboard can be difficult. The goal of this package is to convert reactive data frames into functions that will read from your raw data. It is recommended that an dummy input list be available to simulate the reactive inputs your users will manipulate.
+BugReports: https://github.com/rjake/shinysim/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
