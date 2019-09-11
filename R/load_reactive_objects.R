@@ -76,8 +76,6 @@ load_reactive_objects <- function(file,
           final_code <- 
             find_all_assignments_rmd(file_to_parse)
         } else {
-          # create ouput list so assignments don't break
-          assign("output", list(), .GlobalEnv)
           # parsed code
           final_code <- 
             breakout_server_code(file_to_parse) %>% 
@@ -85,11 +83,21 @@ load_reactive_objects <- function(file,
         }
 
       # parsed code
-      final_df <- 
-        code_to_df(final_code)
+      text_to_parse <- 
+        code_to_df(final_code)$code
       
-      parsed_code <-
-        parse(text = final_df$code)
+      # add library(shiny) if not included
+      if (max(grepl("library\\(shiny\\)", text_to_parse)) == 0) {
+        text_to_parse <-
+          c("library(shiny)", text_to_parse)
+      }
+        
+      # list of expressions
+      parsed_code <- parse(text = text_to_parse)
+      
+      # create ouput & session lists so assignments don't break
+      assign("output", list(), .GlobalEnv)
+      assign("session", list(), .GlobalEnv)
       
       # final evaluation
       for (i in seq_along(parsed_code)) {
