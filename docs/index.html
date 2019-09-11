@@ -102,7 +102,7 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinysim)
 
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="dt">package =</span> <span class="st">"shinysim"</span>, <span class="st">"Rmd/test_dashboard_no_inputs.Rmd"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st"> </span><span class="kw">load_reactive_objects</span>()</code></pre></div>
+<span class="st"> </span><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>()</code></pre></div>
 <p>This will result in the following output</p>
 <pre><code>Here are the inputs you have listed:
 
@@ -126,7 +126,7 @@ Do you want to continue?
 2: No</code></pre>
 <p>Hitting <code>1</code> will then update your global environment with all raw data and assignments, your dummy <code>input</code> list, and all reactive objects converted to functions. As functions, the code will keep all the data manipulation and reference your dummy <code>input</code> list. Note: <strong>this function does not change your files</strong>; the manipulation happens within the function.</p>
 <p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> argument takes a regular expression as the pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load_reactive_objects</span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>(
   ...,
   <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, 
   <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span>
@@ -143,7 +143,7 @@ Do you want to continue?
 )
 
 <span class="co"># the output will automatically be used here</span>
-<span class="kw">view_ui</span>()</code></pre></div>
+<span class="kw"><a href="reference/view_ui.html">view_ui</a></span>()</code></pre></div>
 <p>You can also pipe it</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(
   <span class="st">"state"</span>,
@@ -153,15 +153,22 @@ Do you want to continue?
     <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),
     <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)
   )
-) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">view_ui</span>(<span class="dt">close_after =</span> <span class="ot">NULL</span>)</code></pre></div>
-<p>Note that <code>close_after</code> is set to <code>NULL</code> in this example. The <code>view_ui()</code> function launches an app and defualts to closing after 5 seconds. You can adjusts how long it runs or use <code>NULL</code> and stop it manually by using the stop sign.:red_circle:</p>
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="reference/view_ui.html">view_ui</a></span>(<span class="dt">close_after =</span> <span class="ot">NULL</span>)</code></pre></div>
+<p>Note that <code>close_after</code> is set to <code>NULL</code> in this example. The <code><a href="reference/view_ui.html">view_ui()</a></code> function launches an app and defualts to closing after 5 seconds. You can adjusts how long it runs or use <code>NULL</code> and stop it manually by using the stop sign.:red_circle:</p>
 <p><img src="reference/figures/view_ui.png"></p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Report a bug at <br><a href="https://github.com/rjake/shinysim/issues">https://​github.com/​rjake/​shinysim/​issues</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
