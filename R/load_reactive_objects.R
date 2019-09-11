@@ -73,20 +73,28 @@ load_reactive_objects <- function(file,
       
         if (is_rmd) { 
           # code as tibble (orig + converted functions)
-          final_code <- code_to_df(file_to_parse)
-          # parsed code
-          parsed_code <- parse(text = final_code$code)
+          final_code <- 
+            find_all_assignments_rmd(file_to_parse)
         } else {
           # create ouput list so assignments don't break
           assign("output", list(), .GlobalEnv)
           # parsed code
-          parsed_code <- parse_server_file(file_to_parse)
+          final_code <- 
+            breakout_server_code(file_to_parse) %>% 
+            find_all_assignments_r()
         }
+
+      # parsed code
+      final_df <- 
+        code_to_df(final_code)
+      
+      parsed_code <-
+        parse(text = final_df$code)
       
       # final evaluation
-      suppressMessages(
-        eval(parsed_code, envir = .GlobalEnv)
-      )
+      for (i in seq_along(parsed_code)) {
+        eval_code(parsed_code[i])
+      }
     }
   }
 }

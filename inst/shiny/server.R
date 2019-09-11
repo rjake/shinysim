@@ -86,3 +86,6 @@ server <- function(input, output, session) {
   )
   
 }
+
+a <- stop(error)
+b <- warning("test")

@@ -4,10 +4,10 @@
 \alias{code_to_df}
 \title{Convert R code to a data frame}
 \usage{
-code_to_df(file)
+code_to_df(code)
 }
 \arguments{
-\item{file}{to evaluate}
+\item{code}{to evaluate}
 }
 \description{
 Convert R code to a data frame
