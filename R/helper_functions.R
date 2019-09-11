@@ -135,7 +135,12 @@ find_input_code <- function(file){
   
   # R files should use "dummy_input <-", Rmd should use "input <-"
   input_code <- parsed[grepl("(dummy_)?input <-", parsed)]
-  as.character(gsub("dummy_", "", input_code))
+  
+  ifelse(
+    length(input_code > 0),
+    as.character(gsub("dummy_", "", input_code)),
+    ""
+  )
 }
 
 
@@ -200,60 +205,65 @@ input_usage <- function(file) {
 validate_inputs <- function(file) {
   input_code <- find_input_code(file)
   
-  input_demo_values <-
-    input_code %>%
-    str_extract_all("([\\w\\.\\_0:9]+)(?=\\s\\=)") %>%
-    unlist()
-  
-  input_ref <-
-    input_usage(file) %>%
-    mutate(
-      missing = (!.data$input_name %in% input_demo_values | length(input_demo_values) == 0),
-      status = ifelse(missing, "missing", "have")
-    )
-  
-  
-  if (nrow(input_ref) == 0) { # no inputs
-    print("No inputs")
+  if (input_code == "") {
+    print("No input$... objects listed")
+  } else {
+      
+    input_demo_values <-
+      input_code %>%
+      str_extract_all("([\\w\\.\\_0:9]+)(?=\\s\\=)") %>%
+      unlist()
     
-  } else if (sum(input_ref$missing) == 0) { # no missing references
-    message("\nall inputs accounted for :)\n")
+    input_ref <-
+      input_usage(file) %>%
+      mutate(
+        missing = (!.data$input_name %in% input_demo_values | length(input_demo_values) == 0),
+        status = ifelse(missing, "missing", "have")
+      )
     
-  } else { # missing references
-    message("Here are the inputs you have listed:\n")
-    input_ref %>%
-      select(.data$status, input = .data$input_name, .data$lines) %>%
-      arrange(.data$status) %>%
-      pander::pandoc.table(justify = "left", split.cells = 25)
     
-    input_df <-
+    if (nrow(input_ref) == 0) { # no inputs
+      print("No input$... objects listed")
+      
+    } else if (sum(input_ref$missing) == 0) { # no missing references
+      message("\nAll inputs accounted for :)\n")
+      
+    } else { # missing references
+      message("Here are the inputs you have listed:\n")
       input_ref %>%
-      filter(missing == TRUE)
-    
-    input_add <-
-      glue('{input_df$input_name} = ""') %>%
-      glue_collapse(sep = ", \n")
-    
-    is_rmd <- str_detect(file, "[rR]md$")
-    
-    if (length(input_code) == 0) { # no input demo, create new list
-      update_input_code <- glue("input <- list({input_add})")
+        select(.data$status, input = .data$input_name, .data$lines) %>%
+        arrange(.data$status) %>%
+        pander::pandoc.table(justify = "left", split.cells = 25)
       
-      if (is_rmd) {
-        message("\n# Add this code chunk to your Rmd:\n")
-        message("```{r input_demo, eval = FALSE}")
+      input_df <-
+        input_ref %>%
+        filter(missing == TRUE)
+      
+      input_add <-
+        glue('{input_df$input_name} = ""') %>%
+        glue_collapse(sep = ", \n")
+      
+      is_rmd <- str_detect(file, "[rR]md$")
+      
+      if (length(input_code) == 0) { # no input demo, create new list
+        update_input_code <- glue("input <- list({input_add})")
+        
+        if (is_rmd) {
+          message("\n# Add this code chunk to your Rmd:\n")
+          message("```{r input_demo, eval = FALSE}")
+          print(styler::style_text(update_input_code))
+          message("```")
+        } else {# is R file
+          message("\n# Add this code to your R file:\n")
+          print(styler::style_text(glue("dummy_{update_input_code}")))
+        }
+      } else { # append list
+        message("Update code:")
+        update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
+        # str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
         print(styler::style_text(update_input_code))
-        message("```")
-      } else {# is R file
-        message("\n# Add this code to your R file:\n")
-        print(styler::style_text(glue("dummy_{update_input_code}")))
+        
       }
-    } else { # append list
-      message("Update code:")
-      update_input_code <- glue("input <- list(\n..., \n{input_add}\n)")
-      # str_replace(trimws(input_demo), "\\)$", glue("\n, {input_add})"))
-      print(styler::style_text(update_input_code))
-      
     }
   }
 }
