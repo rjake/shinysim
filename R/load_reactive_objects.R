@@ -85,9 +85,11 @@ load_reactive_objects <- function(file,
         }
 
       # parsed code
-      parsed_code <- 
-        code_to_df(final_code) %>% 
-        parse(text = final_code$code)
+      final_df <- 
+        code_to_df(final_code)
+      
+      parsed_code <-
+        parse(text = final_df$code)
       
       # final evaluation
       for (i in seq_along(parsed_code)) {
