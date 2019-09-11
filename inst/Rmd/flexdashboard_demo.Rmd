@@ -19,7 +19,7 @@ input <- list(
 
 ```{r setup}
 library(tidyverse)
-library(shiny)        #renderPlot, renderTable, sliderInput
+#library(shiny)        #renderPlot, renderTable, sliderInput
 library(shinyWidgets) #radioGroupButtons
 
 raw_data <- mpg 
