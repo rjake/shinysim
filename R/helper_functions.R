@@ -137,7 +137,7 @@ find_input_code <- function(file){
   input_code <- parsed[grepl("(dummy_)?input <-", parsed)]
   
   ifelse(
-    length(input_code > 0),
+    length(input_code) > 0,
     as.character(gsub("dummy_", "", input_code)),
     ""
   )
