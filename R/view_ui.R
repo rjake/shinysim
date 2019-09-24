@@ -27,7 +27,7 @@ view_ui <- function(x, close_after = 5) {
     x <- .Last.value
   }
   
-  if (class(x)[1] %in% c("shiny.tag", "shiny.tag.list")) {
+  if (!class(x)[1] %in% c("shiny.tag", "shiny.tag.list")) {
     stop(
       'expected an object of class "shiny.tag" or "shiny.tag.list"',
       call. = FALSE
