@@ -44,7 +44,7 @@ view_ui <- function(x, close_after = 5) {
     }
   }
   
-  app <- shiny::shinyApp(ui, server)
+  app <- shinyApp(ui, server)
   
   runApp(
     app, 
