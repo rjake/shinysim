@@ -24,4 +24,5 @@ Imports:
 VignetteBuilder: knitr
 Suggests: 
     rmarkdown,
-    testthat
+    testthat,
+    mockery
