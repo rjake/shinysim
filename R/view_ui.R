@@ -34,7 +34,6 @@ view_ui <- function(x, close_after = 5) {
     )
   }
   
-  #html_print(x)
   ui <- fluidPage(x)
   
   server <- function(input, output) {
