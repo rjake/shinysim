@@ -47,7 +47,7 @@ view_ui <- function(x, close_after = 5) {
   app <- shinyApp(ui, server)
   
   runApp(
-    app, 
+    appDir = app, 
     launch.browser = rstudioapi::viewer
   )
 }
