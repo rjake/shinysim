@@ -29,9 +29,9 @@ inside_shinyapp <- function(x){
 }
 
 
-extract_from_app_fn <- function(x) {
+extract_from_app_fn <- function(text) {
   
-  code <- parse(text = gsub("shiny::", "", x))
+  code <- gsub("shiny::", "", text)
   
   if (!grepl("server", code)) {
     warning("server not listed", call. = FALSE)

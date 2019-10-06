@@ -8,13 +8,13 @@ app_guts <-
       output$plot <- renderPlot(plot(data()))
     }'
 
-runapp_has_shinyapp <- paste0("runApp(shinyApp(", app_guts, "))")
+runapp_has_shinyapp <- parse(text = paste0("runApp(shinyApp(", app_guts, "))"))
 
-runapp_has_list <- paste0("runApp(list(", app_guts, "))")
+runapp_has_list <- parse(text = paste0("runApp(list(", app_guts, "))"))
 
-shinyapp_alone <- paste0("shinyApp(", app_guts, ")")
+shinyapp_alone <- parse(text = paste0("shinyApp(", app_guts, ")"))
 
-shinyapp_assigned <- paste0("app <- shinyApp(", app_guts, ")")
+shinyapp_assigned <- parse(text = paste0("app <- shinyApp(", app_guts, ")"))
 
 
 test_that("assingments found", {
