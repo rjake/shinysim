@@ -40,3 +40,24 @@ test_that("parameters were appropriately passed", {
     launch.browser = rstudioapi::viewer
   )
 })
+
+
+# test_that("Last.value used if missing", {
+#   fluid_page_mock <- mock()
+#   
+#   stub(
+#     where = view_ui,
+#     what = "fluidPage",
+#     how = fluid_page_mock
+#   )
+#   
+#   tagList(h4("A header"))
+#   
+#   view_ui()
+# 
+#   expect_args(
+#     fluid_page_mock,
+#     x = tagList(h4("A header")),
+#     n = 1
+#   )
+# })
