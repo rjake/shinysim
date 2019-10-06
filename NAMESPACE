@@ -3,6 +3,7 @@
 export("%>%")
 export(breakout_server_code)
 export(char_between)
+export(guts)
 export(load_reactive_objects)
 export(remove_objects)
 export(strings_to_find)
