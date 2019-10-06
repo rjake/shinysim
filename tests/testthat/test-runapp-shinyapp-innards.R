@@ -32,6 +32,13 @@ test_that("assingments found", {
   )
 })
 
+test_that("warning if no server listed", {
+  expect_warning(
+    extract_from_app_fn("1+1"),
+    "server not listed"
+  )
+})
+
 
 test_that("server found", {
   expect_equal(
@@ -41,4 +48,15 @@ test_that("server found", {
     names(inside_shinyapp(shinyapp_assigned)),
     c("", "ui", "server")
   )
+})
+
+
+test_that("guts extracts args", {
+  x <- "mean(list(1:10))"
+  
+  res_mean <- invisible(guts(x, "mean"))
+  res_list <- invisible(guts(x, "mean") %>% guts("list"))
+  
+  expect_equal(res_mean[[2]], quote(list(1:10)))
+  expect_equal(res_list[[2]], quote(1:10))
 })
