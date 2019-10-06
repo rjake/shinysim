@@ -63,7 +63,7 @@ breakout_server_code <- function(file) {
   if (!has_server_line & !has_app_line) { # use the code as is
     final_code <- raw_code
     
-  } else if (!has_server_line) { # convert the "server <-" line
+  } else if (has_server_line) { # convert the "server <-" line
     server_code <- raw_code[server_line]
     new_code <- char_between(server_code)
     final_code <- append(raw_code, new_code, after = server_line)[-server_line]
