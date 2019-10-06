@@ -40,7 +40,7 @@ valid_assignments <- function() {
 #'
 #' @export
 strings_to_find <- function() {
-  paste0("^(library|", valid_assignments(), " <-)")
+  paste0("^(library|", valid_assignments(), " (<-|=[^=]))")
 }
 
 
@@ -134,7 +134,7 @@ find_input_code <- function(file){
   }
   
   # R files should use "dummy_input <-", Rmd should use "input <-"
-  input_code <- parsed[grepl("(dummy_)?input <-", parsed)]
+  input_code <- parsed[grepl("^(dummy_)?input (<-|=[^=])", parsed)]
   
   ifelse(
     length(input_code) > 0,
