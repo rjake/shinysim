@@ -28,3 +28,9 @@ test_that("assignments can be = or <-", {
     x[c(2,4)]
   )
 })
+
+
+test_that("find_all_assignments_rmd", {
+  assignments <- find_all_assignments_rmd("inst/Rmd/flexdashboard_demo.Rmd")
+  expect_equal(length(assignments), 4)
+})
