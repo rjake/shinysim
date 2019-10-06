@@ -30,9 +30,18 @@ test_that("assignments can be = or <-", {
 })
 
 
+test_that("find_all_assignments_r", {
+  assignments <- 
+    breakout_server_code("demo_r_file_server.R") %>% 
+    find_all_assignments_r()
+  
+  expect_equal(length(assignments), 2)
+})
+
+
 test_that("find_all_assignments_rmd", {
-  assignments <- find_all_assignments_rmd("inst/Rmd/flexdashboard_demo.Rmd")
-  expect_equal(length(assignments), 4)
+  assignments <- find_all_assignments_rmd("demo_rmd_file.Rmd")
+  expect_equal(length(assignments), 2)
 })
 
 
@@ -47,4 +56,13 @@ test_that("code_to_df", {
     )
 
   expect_equal(actual, expected)
+})
+
+
+test_that("find_input_code", {
+  inputs <- find_input_code("demo_rmd_file.Rmd")
+  expect_equal(
+    inputs, 
+    "input <- list(x = 1, y = 2)"
+  )
 })
