@@ -12,6 +12,15 @@ test_that("shiny::reactive() and reactive() both work", {
 })
 
 
+test_that("strings_to_find() most recent list", {
+  expect_equal(
+    strings_to_find(),
+    "^(library|[\\w\\.\\$0:9]+ (<-|=[^=]))"
+  )
+  
+})
+
+
 test_that("assignments can be = or <-", {
   x <- c("a", "a = 1", "b == 2", "c <- 3")
   expect_equal(
