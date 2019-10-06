@@ -10,3 +10,12 @@ test_that("shiny::reactive() and reactive() both work", {
     convert_assignments(with_namespace)
   )        
 })
+
+
+test_that("assignments can be = or <-", {
+  x <- c("a", "a = 1", "b == 2", "c <- 3")
+  expect_equal(
+    find_all_assignments_r(x),
+    x[c(2,4)]
+  )
+})
