@@ -69,12 +69,3 @@ extract_from_app_fn <- function(text) {
   
   deparse_server(inside_code$server)
 }
-
-
-app_assigned <- {
-  paste0(
-    "^",
-    valid_assignments(), 
-    "\\s?(<-|=)\\s?shinyApp.*"
-  )
-}
