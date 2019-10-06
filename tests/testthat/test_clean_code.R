@@ -34,3 +34,17 @@ test_that("find_all_assignments_rmd", {
   assignments <- find_all_assignments_rmd("inst/Rmd/flexdashboard_demo.Rmd")
   expect_equal(length(assignments), 4)
 })
+
+
+test_that("code_to_df", {
+  x <- "a <- reactive(x)"
+  actual <- code_to_df(x)
+  
+  expected <-
+    tibble::tibble(
+      raw = x,
+      code = "a <- function() (x)"
+    )
+
+  expect_equal(actual, expected)
+})
