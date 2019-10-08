@@ -40,3 +40,33 @@ test_that("parameters were appropriately passed", {
     launch.browser = rstudioapi::viewer
   )
 })
+
+
+test_that("missing uses last value", {
+  test_tag <- h4("A header")
+  
+  fluid_page_mock <- mock()
+  
+  stub(
+    where = view_ui,
+    what = "fluidPage",
+    how = fluid_page_mock
+  )
+  
+  stub(
+    where = view_ui,
+    what = "missing",
+    how = TRUE
+  )
+  
+  test_tag
+  
+  view_ui()
+  
+  expect_args(
+    mock_object = fluid_page_mock,
+    n = 1,
+    x = test_tag
+  )
+  
+})
