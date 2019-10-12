@@ -256,7 +256,7 @@ validate_inputs <- function(file) {
       
       is_rmd <- str_detect(file, "[rR]md$")
       
-      if (length(input_code) == 0) { # no input demo, create new list
+      if (input_code == "") { # no input demo, create new list
         update_input_code <- glue("input <- list({input_add})")
         
         if (is_rmd) {
