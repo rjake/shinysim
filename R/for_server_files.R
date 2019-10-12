@@ -80,5 +80,5 @@ breakout_server_code <- function(file) {
     
   }
   
-  to_eval <- unlist(lapply(final_code, convert_assignments))
+  unlist(lapply(final_code, convert_assignments))
 }
