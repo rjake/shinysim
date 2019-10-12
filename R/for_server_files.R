@@ -15,20 +15,20 @@
 #'   char_between("c")
 #'   
 char_between <- function(text, pattern = c("c", "p")) {
-  pattern <- match.arg(pattern)
-  regex_pattern <-
-    case_when(
-      pattern == "c" ~ "[\\{\\}]",
-      pattern == "p" ~ "[\\(\\)]",
-      TRUE ~ NA_character_ 
-    )
-  
-  if (is.na(regex_pattern)) {
-    stop(
-      '"c" curly braces {} or "p" parentheses () not specified', 
+  if (missing(pattern)) {
+    warning(
+      'pattern not specified, curly braces {} used for parsing', 
       call. = FALSE
     ) 
   }
+  
+  pattern <- match.arg(pattern)
+  regex_pattern <-
+    ifelse(
+      pattern == "c", 
+      "[\\{\\}]",
+      "[\\(\\)]" 
+    )
   
   pattern_match <-  
     str_locate_all(string = as.character(text), pattern = regex_pattern)[[1]] %>% 
@@ -63,35 +63,33 @@ breakout_server_code <- function(file) {
     stop("more than one server assignment found", call. = FALSE)
   }
   
-  if (server_missing) {
+  to_eval <- vector("character", 0)
+  
+  if (server_missing) { # treat all code as "server" code
     warning("server not found, using whole file", call. = FALSE)
     new_code <- unlist(lapply(raw_code, convert_assignments))
+    to_eval <- new_code
   } else {
     server_code <- raw_code[server_line]
     
     new_code <-
-      char_between(server_code) %>% 
-      convert_assignments() #%>% 
-    #parse(text = .)  
-  }
-  
-  to_eval <- ""#expression()
-  
-  # if the first line is "server <- " or server is not specified
-  if (server_missing) {
-    to_eval <- c(to_eval, new_code)
-  } else if (server_line == 1) {
-    to_eval <- c(to_eval, new_code)
-  } else {# replace the server <- with the assignments contained within
-    to_eval <- c(raw_code[1:(server_line - 1)], new_code)
-  }
-  
-  # if there is extra code after "server <-" (server assignment isn't the last assignment)
-  if (!server_missing) {
+      unlist(
+        lapply(char_between(server_code, pattern = "c"), convert_assignments)
+      )
+    
+    if (server_line == 1) { # use just the server code
+      to_eval <- new_code
+    } else {# replace the server <- with the assignments contained within
+      to_eval <- c(raw_code[1:(server_line - 1)], new_code)
+    }
+    
+    # if there is extra code after "server <-" (server assignment isn't the last assignment)
     if(server_line != length(raw_code)) {
       to_eval <- c(to_eval, raw_code[(server_line + 1):length(raw_code)])
     }
+    
   }
+  
   
   to_eval
 }
