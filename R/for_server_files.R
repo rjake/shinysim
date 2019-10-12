@@ -24,7 +24,10 @@ char_between <- function(text, pattern = c("c", "p")) {
     )
   
   if (is.na(regex_pattern)) {
-    stop('"c" curly braces {} or "p" parentheses () not specified') 
+    stop(
+      '"c" curly braces {} or "p" parentheses () not specified', 
+      call. = FALSE
+    ) 
   }
   
   pattern_match <-  
@@ -56,36 +59,38 @@ breakout_server_code <- function(file) {
   
   server_missing <- length(server_line) == 0
   
-  if (length(server_line) > 1) {stop("more than one server assignment found")}
-  
-  if (server_missing) {
-    warning("server not found, using whole file")
-    new_code <-
-      raw_code %>% 
-      convert_assignments() #%>% 
-      #parse(text = .)
+  if (length(server_line) > 1) {
+    stop("more than one server assignment found", call. = FALSE)
   }
   
-  
-  server_code <- raw_code[server_line]
-  
-  new_code <-
-    char_between(server_code) %>% 
-    convert_assignments() #%>% 
-    #parse(text = .)
+  if (server_missing) {
+    warning("server not found, using whole file", call. = FALSE)
+    new_code <- unlist(lapply(raw_code, convert_assignments))
+  } else {
+    server_code <- raw_code[server_line]
+    
+    new_code <-
+      char_between(server_code) %>% 
+      convert_assignments() #%>% 
+    #parse(text = .)  
+  }
   
   to_eval <- ""#expression()
   
   # if the first line is "server <- " or server is not specified
-  if (server_line == 1 | server_missing) {
+  if (server_missing) {
+    to_eval <- c(to_eval, new_code)
+  } else if (server_line == 1) {
     to_eval <- c(to_eval, new_code)
   } else {# replace the server <- with the assignments contained within
     to_eval <- c(raw_code[1:(server_line - 1)], new_code)
   }
   
   # if there is extra code after "server <-" (server assignment isn't the last assignment)
-  if (server_line != length(raw_code)) {
-    to_eval <- c(to_eval, raw_code[(server_line + 1):length(raw_code)])
+  if (!server_missing) {
+    if(server_line != length(raw_code)) {
+      to_eval <- c(to_eval, raw_code[(server_line + 1):length(raw_code)])
+    }
   }
   
   to_eval
