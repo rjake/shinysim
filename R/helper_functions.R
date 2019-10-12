@@ -165,21 +165,29 @@ find_input_code <- function(file){
 #' }
 #' 
 input_usage <- function(file) {
-  tibble(text = trimws(read_lines(file = file))) %>%
+  df <-
+    tibble(text = trimws(read_lines(file = file))) %>%
     mutate(
       line = row_number(),
       text = str_remove(.data$text, "#.*") # remove comments
     ) %>%
-    filter(str_detect(.data$text, "input\\$[\\w\\._0-9]+")) %>%
-    mutate(input_name = str_extract_all(.data$text, "input\\$[\\w\\._0-9]+")) %>%
-    unnest(.data$input_name) %>%
-    distinct(.data$input_name, .data$line) %>%
-    group_by(input_name = str_remove(.data$input_name, "input\\$")) %>%
-    summarise(
-      times_used = n(),
-      lines = glue_collapse(.data$line, sep = ", ")
-    ) %>%
-    ungroup()
+    filter(str_detect(.data$text, "input\\$[\\w\\._0-9]+"))
+
+  if (nrow(df) > 0) {
+    df <-
+      df %>%
+      mutate(input_name = str_extract_all(.data$text, "input\\$[\\w\\._0-9]+")) %>%
+      unnest(.data$input_name) %>%
+      distinct(.data$input_name, .data$line) %>%
+      group_by(input_name = str_remove(.data$input_name, "input\\$")) %>%
+      summarise(
+        times_used = n(),
+        lines = glue_collapse(.data$line, sep = ", ")
+      ) %>%
+      ungroup()
+  }
+
+  df
 }
 
 
@@ -206,8 +214,9 @@ input_usage <- function(file) {
 #' }
 validate_inputs <- function(file) {
   input_code <- find_input_code(file)
+  input_use <- input_usage(file)
   
-  if (input_code == "") {
+  if (nrow(input_use) == 0) {
     print("No input$... objects listed")
   } else {
       
