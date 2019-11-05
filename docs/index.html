@@ -92,17 +92,17 @@
 
 -->
 <p>You can install the development version from <a href="https://github.com/rjake/shinysim">GitHub</a> with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"rjake/shinysim"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/remote-reexports">install_github</a></span>(<span class="st">"rjake/shinysim"</span>)</a></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>There is a dummy flexdashboard available when the package is installed for you to see how this works.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinysim)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="dt">package =</span> <span class="st">"shinysim"</span>, <span class="st">"Rmd/test_dashboard_no_inputs.Rmd"</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st"> </span><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>()</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinysim)</a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="dt">package =</span> <span class="st">"shinysim"</span>, <span class="st">"Rmd/test_dashboard_no_inputs.Rmd"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="st"> </span><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>()</a></code></pre></div>
 <p>This will result in the following output</p>
 <pre><code>Here are the inputs you have listed:
 
@@ -126,34 +126,34 @@ Do you want to continue?
 2: No</code></pre>
 <p>Hitting <code>1</code> will then update your global environment with all raw data and assignments, your dummy <code>input</code> list, and all reactive objects converted to functions. As functions, the code will keep all the data manipulation and reference your dummy <code>input</code> list. Note: <strong>this function does not change your files</strong>; the manipulation happens within the function.</p>
 <p>There are additional arguments you can use to resart R or to clear the environment. The <code>keep</code> argument takes a regular expression as the pattern match. To get an exact match, use the <code>^</code> and <code>$</code> to signify the beginning and end (ex. <code>^your_text$</code>). To list objects, separate them with a <code>|</code>. as shown below.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>(
-  ...,
-  <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, 
-  <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span>
-)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="reference/load_reactive_objects.html">load_reactive_objects</a></span>(</a>
+<a class="sourceLine" id="cb4-2" title="2">  ...,</a>
+<a class="sourceLine" id="cb4-3" title="3">  <span class="dt">clear_environment =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">keep =</span> <span class="st">"test_|^df$|raw_data"</span>, <span class="co"># objects to keep</span></a>
+<a class="sourceLine" id="cb4-5" title="5">)</a></code></pre></div>
 <p>The package also has a function to view UI elements in one of two ways:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(
-  <span class="st">"state"</span>,
-  <span class="st">"Choose a state:"</span>,
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(
-    <span class="dt">East =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"NY"</span>, <span class="st">"NJ"</span>, <span class="st">"CT"</span>),
-    <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),
-    <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)
-  )
-)
-
-<span class="co"># the output will automatically be used here</span>
-<span class="kw"><a href="reference/view_ui.html">view_ui</a></span>()</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(</a>
+<a class="sourceLine" id="cb5-2" title="2">  <span class="st">"state"</span>,</a>
+<a class="sourceLine" id="cb5-3" title="3">  <span class="st">"Choose a state:"</span>,</a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(</a>
+<a class="sourceLine" id="cb5-5" title="5">    <span class="dt">East =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"NY"</span>, <span class="st">"NJ"</span>, <span class="st">"CT"</span>),</a>
+<a class="sourceLine" id="cb5-6" title="6">    <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),</a>
+<a class="sourceLine" id="cb5-7" title="7">    <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)</a>
+<a class="sourceLine" id="cb5-8" title="8">  )</a>
+<a class="sourceLine" id="cb5-9" title="9">)</a>
+<a class="sourceLine" id="cb5-10" title="10"></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="co"># the output will automatically be used here</span></a>
+<a class="sourceLine" id="cb5-12" title="12"><span class="kw"><a href="reference/view_ui.html">view_ui</a></span>()</a></code></pre></div>
 <p>You can also pipe it</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(
-  <span class="st">"state"</span>,
-  <span class="st">"Choose a state:"</span>,
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(
-    <span class="dt">East =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"NY"</span>, <span class="st">"NJ"</span>, <span class="st">"CT"</span>),
-    <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),
-    <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)
-  )
-) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="reference/view_ui.html">view_ui</a></span>(<span class="dt">close_after =</span> <span class="ot">NULL</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">shiny<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shiny/topics/selectInput">selectInput</a></span>(</a>
+<a class="sourceLine" id="cb6-2" title="2">  <span class="st">"state"</span>,</a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="st">"Choose a state:"</span>,</a>
+<a class="sourceLine" id="cb6-4" title="4">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(</a>
+<a class="sourceLine" id="cb6-5" title="5">    <span class="dt">East =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"NY"</span>, <span class="st">"NJ"</span>, <span class="st">"CT"</span>),</a>
+<a class="sourceLine" id="cb6-6" title="6">    <span class="dt">West =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"WA"</span>, <span class="st">"OR"</span>, <span class="st">"CA"</span>),</a>
+<a class="sourceLine" id="cb6-7" title="7">    <span class="dt">Midwest =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MN"</span>, <span class="st">"WI"</span>, <span class="st">"IA"</span>)</a>
+<a class="sourceLine" id="cb6-8" title="8">  )</a>
+<a class="sourceLine" id="cb6-9" title="9">) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="reference/view_ui.html">view_ui</a></span>(<span class="dt">close_after =</span> <span class="ot">NULL</span>)</a></code></pre></div>
 <p>Note that <code>close_after</code> is set to <code>NULL</code> in this example. The <code><a href="reference/view_ui.html">view_ui()</a></code> function launches an app and defualts to closing after 5 seconds. You can adjusts how long it runs or use <code>NULL</code> and stop it manually by using the stop sign.:red_circle:</p>
 <p><img src="reference/figures/view_ui.png"></p>
 </div>
@@ -181,6 +181,7 @@ Do you want to continue?
 <li>Jake Riley <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
+
 
       </div>
 
