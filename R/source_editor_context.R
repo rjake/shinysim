@@ -8,9 +8,6 @@
 #'  
 #' @export
 #' 
-#' @usage 
-#' convert_selection()
-#' 
 #' @importFrom rstudioapi getSourceEditorContext
 #'
 convert_selection <- function() {
