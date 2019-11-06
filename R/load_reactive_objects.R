@@ -1,6 +1,6 @@
-#' Add objects and inputs from a Rmd to your global environment
+#' Add objects and inputs from an R/Rmd script to your global environment
 #' 
-#' @description This function will run all assignments of your Rmd. In the process, this function will encourage the creation of a dummy \code{input} list that will mimic user input and allow your code to run. Lastly, reactive objects are converted to functions so they can still be called as \code{df()} etc.
+#' @description This function will run all assignments of your R or Rmd. file In the process, this function will encourage the creation of a dummy \code{input} list that will mimic user input and allow your code to run. Lastly, reactive objects are converted to functions so they can still be called as \code{df()} etc.
 #' @section Warning:
 #' This function has the ability to overwrite your objects in your global environment. Make sure you understand how this function works before moving forward.
 #' 
