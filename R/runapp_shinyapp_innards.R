@@ -2,14 +2,13 @@
 #' 
 #' @param x the code stored as text
 #' @param fn the function to sub out
-#' 
-#' @export
-#'
+#' @noRd
 #' @examples
+#'  \dontrun{
 #' x <- "mean(list(1:10, 10:30))"
 #' guts(x, "mean")
 #' guts(x, "mean") %>% guts("list")
-#' 
+#' }
 guts <- function(x, fn) {
   return_args <- function(...) {
     (as.list(match.call(expand.dots = T)))
@@ -24,7 +23,7 @@ guts <- function(x, fn) {
 #' Returns asignments only from expressions
 #' 
 #' @param x expression from code stored as text
-#' 
+#' @noRd
 deparse_server <- function(x) {
   x %>% 
     deparse() %>% 
@@ -36,7 +35,7 @@ deparse_server <- function(x) {
 #' Pulls the calls out of runApp and shinyApp
 #' 
 #' @param x expression containing runApp(...) 
-#'
+#' @noRd
 inside_runapp <- function(x){
   sub("runApp\\(shinyApp", "runApp(list", x) %>% 
     guts("runApp") %>% 
@@ -53,7 +52,7 @@ inside_shinyapp <- function(x){
 #' Returns server code from shinyApp or runApp
 #' 
 #' @param text code stored as text
-#' 
+#' @noRd
 extract_from_app_fn <- function(text) {
   
   code <- gsub("shiny::", "", text)

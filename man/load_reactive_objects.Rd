@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_reactive_objects.R
 \name{load_reactive_objects}
 \alias{load_reactive_objects}
-\title{Add objects and inputs from a Rmd to your global environment}
+\title{Load inputs and convert reactive functions from an R/Rmd script to your global environment}
 \usage{
 load_reactive_objects(file, clear_environment = FALSE, restart = FALSE,
   keep = NULL)
@@ -17,7 +17,7 @@ load_reactive_objects(file, clear_environment = FALSE, restart = FALSE,
 \item{keep}{a regular expression of objects to keep when \code{clear_environment = TRUE}}
 }
 \description{
-This function will run all assignments of your Rmd. In the process, this function will encourage the creation of a dummy \code{input} list that will mimic user input and allow your code to run. Lastly, reactive objects are converted to functions so they can still be called as \code{df()} etc.
+This function will run all assignments of your R or Rmd. file In the process, this function will encourage the creation of a dummy \code{input} list that will mimic user input and allow your code to run. Lastly, reactive objects are converted to functions so they can still be called as \code{df()} etc.
 }
 \section{Warning}{
 

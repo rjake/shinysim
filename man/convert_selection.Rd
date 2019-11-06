@@ -2,7 +2,7 @@
 % Please edit documentation in R/source_editor_context.R
 \name{convert_selection}
 \alias{convert_selection}
-\title{Convert assignment from reactive to a function}
+\title{Convert and load the hightlighted assignment to the global environment}
 \usage{
 convert_selection()
 }
