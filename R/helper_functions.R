@@ -4,7 +4,7 @@
 #'
 #' @description If the file is not specified, a menu will appear asking the user if they want to use the active source file loaded in RStudio or if they want to select the file (opens a new window).
 #' @importFrom utils menu
-#'
+#' @noRd
 which_file <- function(file) {
   if (!missing(file)) {
     file_to_parse <- file
@@ -32,15 +32,13 @@ which_file <- function(file) {
 
 
 #' Valid strings for assignments/column names
-#'
-#' @export
+#' @noRd
 valid_assignments <- function() {
   "[\\w\\.\\$0:9]+"
 }
 
 #' Valid strings for assignments/column names
-#'
-#' @export
+#' @noRd
 strings_to_find <- function() {
   paste0("^(library|", valid_assignments(), " (<-|=[^=]))")
 }
@@ -53,7 +51,7 @@ strings_to_find <- function() {
 #' @description A data frame of all assignments and libraries
 #' @importFrom knitr purl
 #' @importFrom stringr str_detect
-#'
+#' @noRd
 find_all_assignments_r <- function(x) {
   x[str_detect(x, strings_to_find())]
 }
@@ -65,7 +63,7 @@ find_all_assignments_r <- function(x) {
 #' @description A data frame of all assignments and libraries
 #' @importFrom knitr purl
 #' @importFrom stringr str_detect
-#'
+#' @noRd
 find_all_assignments_rmd <- function(file) {
   tmp <- purl(file, output = tempfile(), quiet = TRUE)
   x <- as.character(parse(tmp)) %>% trimws()
@@ -76,9 +74,8 @@ find_all_assignments_rmd <- function(file) {
 #' Convert reactive dataframes to functions
 #'
 #' @param x text to be converted
-#' @noRd
 #' @importFrom stringr str_detect str_replace_all
-#'
+#' @noRd
 convert_assignments <- function(x){
   if (str_detect(x, "\\w+ <- .*reactive\\(")) {
     x <- x %>%
@@ -96,7 +93,7 @@ convert_assignments <- function(x){
 #'
 #' @importFrom tibble tibble
 #' @importFrom dplyr rowwise mutate ungroup
-#'
+#' @noRd
 code_to_df <- function(code) {
   tibble(raw = as.character(code)) %>%
     rowwise() %>%
@@ -113,6 +110,7 @@ code_to_df <- function(code) {
 #' @importFrom readr read_file
 #' @importFrom stringr str_replace_all
 #' @importFrom knitr purl
+#' @noRd
 #' @examples 
 #' \dontrun{
 #' find_input_code("inst/shiny/server.R")
@@ -158,6 +156,7 @@ find_input_code <- function(file){
 #' @importFrom dplyr mutate row_number filter distinct group_by summarise n
 #' @importFrom tidyr unnest
 #' @importFrom glue glue glue_collapse
+#' @noRd
 #'@examples
 #'\dontrun{
 #' input_usage(file = "inst/shiny/server.R")
@@ -205,7 +204,7 @@ input_usage <- function(file) {
 #' @importFrom pander pandoc.table
 #' @importFrom glue glue glue_collapse
 #' @importFrom styler style_text
-#'
+#' @noRd
 #' @examples 
 #' \dontrun{
 #' validate_inputs("inst/Rmd/test_dashboard_missing_inputs.Rmd")
@@ -287,8 +286,7 @@ validate_inputs <- function(file) {
 #' 
 #' @importFrom glue glue
 #' @importFrom utils menu
-#' @export
-#'
+#' @noRd
 #' @examples
 #' \dontrun{
 #' df <- iris

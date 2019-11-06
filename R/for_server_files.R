@@ -3,17 +3,17 @@
 #' @param text the text to scan
 #' @param pattern look between "c" curly braces or "p" parenthese 
 #'
-#' @export
 #' @importFrom dplyr case_when
 #' @importFrom stringr str_locate_all
-#'
+#' @noRd
 #' @examples
+#'  \dontrun{
 #' "here is text (between two parentheses), as an example" %>% 
 #'   char_between("p")
 #'   
 #' "here is text {between two curly braces}, as an example" %>% 
 #'   char_between("c")
-#'   
+#' }
 char_between <- function(text, pattern = c("c", "p")) {
   if (missing(pattern)) {
     warning(
@@ -44,8 +44,7 @@ char_between <- function(text, pattern = c("c", "p")) {
 #' Parse server file for assignments & inputst
 #'
 #' @param file file to parse
-#' 
-#' @export
+#' @noRd
 #' @examples 
 #' \dontrun{
 #' breakout_server_code(file = "inst/shiny/server.R") %>% 
